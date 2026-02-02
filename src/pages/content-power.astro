@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import InfoBox from '../components/shared/InfoBox.astro';
+import CodeBlock from '../components/shared/CodeBlock.astro';
+
+const showcaseEntries = await getCollection('showcase');
+const sortedEntries = showcaseEntries.sort((a, b) => a.data.order - b.data.order);
+
+// Get first entry content for preview
+const firstEntry = sortedEntries[0];
+const { Content } = await render(firstEntry);
+---
+
+<Layout title="Content Power | Astro Lab" description="MDX, Content Collections, and advanced content features">
+	<div class="mb-12">
+		<h1 class="mb-4 bg-gradient-to-r from-pink-400 to-rose-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+			Content Power
+		</h1>
+		<p class="text-lg text-slate-300">
+			MDX integration, Content Collections, and interactive documentation.
+			The perfect foundation for blogs, docs, and content-rich sites.
+		</p>
+	</div>
+
+	<section class="mb-12">
+		<InfoBox type="tip" title="MDX + Astro">
+			MDX lets you use JSX components in Markdown. Combined with Astro's partial hydration,
+			you get interactive content that only ships the JavaScript it needs.
+		</InfoBox>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Showcase Content</h2>
+		<div class="grid gap-4 md:grid-cols-2">
+			{sortedEntries.map((entry) => (
+				<a
+					href={`#${entry.id}`}
+					class="group rounded-xl border border-slate-700 bg-slate-800 p-6 transition-all hover:border-pink-500/50"
+				>
+					<div class="mb-2 flex items-center gap-3">
+						{entry.data.icon && <span class="text-2xl">{entry.data.icon}</span>}
+						<h3 class="font-bold text-white group-hover:text-pink-400">
+							{entry.data.title}
+						</h3>
+					</div>
+					<p class="text-sm text-slate-400">{entry.data.description}</p>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Live MDX Preview</h2>
+		<p class="mb-6 text-slate-400">
+			Below is rendered MDX content with embedded interactive components:
+		</p>
+
+		<div id={firstEntry.id} class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<div class="mb-4 flex items-center justify-between border-b border-slate-700 pb-4">
+				<div class="flex items-center gap-3">
+					{firstEntry.data.icon && <span class="text-2xl">{firstEntry.data.icon}</span>}
+					<div>
+						<h3 class="font-bold text-white">{firstEntry.data.title}</h3>
+						<p class="text-sm text-slate-400">{firstEntry.data.description}</p>
+					</div>
+				</div>
+				<span class="rounded-full bg-pink-500/20 px-2 py-0.5 text-xs text-pink-400">
+					MDX Content
+				</span>
+			</div>
+
+			<article class="prose prose-invert prose-slate max-w-none prose-headings:text-white prose-p:text-slate-300 prose-a:text-pink-400 prose-strong:text-white prose-code:rounded prose-code:bg-slate-900 prose-code:px-1 prose-code:py-0.5 prose-code:text-pink-300 prose-pre:bg-slate-900">
+				<Content />
+			</article>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Implementation</h2>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<CodeBlock title="content.config.ts" lang="typescript">
+{`const showcase = defineCollection({
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: './src/content/showcase'
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    order: z.number().default(0),
+    icon: z.string().optional(),
+  }),
+});`}
+			</CodeBlock>
+
+			<CodeBlock title="Using MDX Content" lang="astro">
+{`---
+import { getCollection, render } from 'astro:content';
+
+const entries = await getCollection('showcase');
+const { Content } = await render(entries[0]);
+---
+
+<article>
+  <Content />
+</article>`}
+			</CodeBlock>
+
+			<CodeBlock title="MDX File Example" lang="mdx">
+{`---
+title: "Interactive Demo"
+description: "MDX with components"
+---
+
+import Counter from './Counter';
+import Callout from './Callout.astro';
+
+# Hello MDX!
+
+<Counter client:visible />
+
+<Callout type="tip">
+  Static Astro components work too!
+</Callout>`}
+			</CodeBlock>
+
+			<CodeBlock title="Component in MDX" lang="tsx">
+{`// Interactive component for MDX
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+// Use in MDX:
+// <Counter client:visible />`}
+			</CodeBlock>
+		</div>
+	</section>
+
+	<section>
+		<div class="rounded-xl border border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-rose-500/10 p-6">
+			<h2 class="mb-4 text-xl font-bold text-white">Content Features</h2>
+			<div class="grid gap-4 md:grid-cols-3">
+				<div>
+					<h3 class="mb-2 font-semibold text-pink-400">MDX Support</h3>
+					<ul class="space-y-1 text-sm text-slate-300">
+						<li>+ Import any component</li>
+						<li>+ Use JSX in Markdown</li>
+						<li>+ Partial hydration works</li>
+						<li>+ TypeScript support</li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-rose-400">Content Collections</h3>
+					<ul class="space-y-1 text-sm text-slate-300">
+						<li>+ Zod schema validation</li>
+						<li>+ Type-safe queries</li>
+						<li>+ Custom loaders</li>
+						<li>+ Computed fields</li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-fuchsia-400">Developer Experience</h3>
+					<ul class="space-y-1 text-sm text-slate-300">
+						<li>+ Build-time validation</li>
+						<li>+ Hot module reloading</li>
+						<li>+ IDE autocomplete</li>
+						<li>+ Error messages</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<style is:global>
+	.prose pre {
+		border: 1px solid rgb(51 65 85);
+	}
+	.prose code::before,
+	.prose code::after {
+		content: none;
+	}
+</style>

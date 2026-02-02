@@ -1,0 +1,123 @@
+---
+interface Metric {
+	name: string;
+	static: number;
+	serverSide: number;
+	spa: number;
+	astro: number;
+	unit: string;
+	lowerIsBetter?: boolean;
+}
+
+const metrics: Metric[] = [
+	{ name: 'Initial Load Time', static: 0.5, serverSide: 2.0, spa: 3.5, astro: 0.8, unit: 's', lowerIsBetter: true },
+	{ name: 'Time to Interactive', static: 0.5, serverSide: 2.5, spa: 4.0, astro: 1.0, unit: 's', lowerIsBetter: true },
+	{ name: 'JS Bundle Size', static: 0, serverSide: 50, spa: 350, astro: 20, unit: 'KB', lowerIsBetter: true },
+	{ name: 'SEO Score', static: 95, serverSide: 90, spa: 60, astro: 98, unit: '', lowerIsBetter: false },
+	{ name: 'Interactivity', static: 20, serverSide: 60, spa: 100, astro: 95, unit: '', lowerIsBetter: false },
+];
+
+function getBarWidth(value: number, metric: Metric): number {
+	const max = Math.max(metric.static, metric.serverSide, metric.spa, metric.astro);
+	return (value / max) * 100;
+}
+
+function isGood(value: number, metric: Metric): boolean {
+	const values = [metric.static, metric.serverSide, metric.spa, metric.astro];
+	if (metric.lowerIsBetter) {
+		return value === Math.min(...values);
+	}
+	return value === Math.max(...values);
+}
+---
+
+<div class="overflow-hidden rounded-xl border border-slate-700 bg-slate-800/50">
+	<div class="border-b border-slate-700 bg-slate-900 px-6 py-4">
+		<h3 class="text-lg font-bold text-white">Performance Comparison Across Eras</h3>
+		<p class="text-sm text-slate-400">How each approach measures up</p>
+	</div>
+
+	<div class="p-6">
+		<div class="mb-6 flex items-center gap-4 text-sm">
+			<div class="flex items-center gap-2">
+				<div class="h-3 w-3 rounded bg-blue-500"></div>
+				<span class="text-slate-400">Static HTML</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="h-3 w-3 rounded bg-green-500"></div>
+				<span class="text-slate-400">Server-Side</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="h-3 w-3 rounded bg-orange-500"></div>
+				<span class="text-slate-400">SPA</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="h-3 w-3 rounded bg-purple-500"></div>
+				<span class="text-slate-400">Astro</span>
+			</div>
+		</div>
+
+		<div class="space-y-6">
+			{metrics.map((metric) => (
+				<div>
+					<div class="mb-2 flex items-center justify-between">
+						<span class="font-medium text-white">{metric.name}</span>
+						<span class="text-xs text-slate-500">
+							{metric.lowerIsBetter ? 'Lower is better' : 'Higher is better'}
+						</span>
+					</div>
+					<div class="space-y-2">
+						<div class="flex items-center gap-3">
+							<div class="w-16 text-xs text-slate-400">Static</div>
+							<div class="relative h-4 flex-1 overflow-hidden rounded bg-slate-700">
+								<div
+									class={`absolute left-0 top-0 h-full rounded transition-all duration-1000 ${isGood(metric.static, metric) ? 'bg-blue-400' : 'bg-blue-500/60'}`}
+									style={`width: ${getBarWidth(metric.static, metric)}%`}
+								></div>
+							</div>
+							<div class={`w-16 text-right text-sm ${isGood(metric.static, metric) ? 'font-bold text-blue-400' : 'text-slate-400'}`}>
+								{metric.static}{metric.unit}
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 text-xs text-slate-400">Server</div>
+							<div class="relative h-4 flex-1 overflow-hidden rounded bg-slate-700">
+								<div
+									class={`absolute left-0 top-0 h-full rounded transition-all duration-1000 ${isGood(metric.serverSide, metric) ? 'bg-green-400' : 'bg-green-500/60'}`}
+									style={`width: ${getBarWidth(metric.serverSide, metric)}%`}
+								></div>
+							</div>
+							<div class={`w-16 text-right text-sm ${isGood(metric.serverSide, metric) ? 'font-bold text-green-400' : 'text-slate-400'}`}>
+								{metric.serverSide}{metric.unit}
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 text-xs text-slate-400">SPA</div>
+							<div class="relative h-4 flex-1 overflow-hidden rounded bg-slate-700">
+								<div
+									class={`absolute left-0 top-0 h-full rounded transition-all duration-1000 ${isGood(metric.spa, metric) ? 'bg-orange-400' : 'bg-orange-500/60'}`}
+									style={`width: ${getBarWidth(metric.spa, metric)}%`}
+								></div>
+							</div>
+							<div class={`w-16 text-right text-sm ${isGood(metric.spa, metric) ? 'font-bold text-orange-400' : 'text-slate-400'}`}>
+								{metric.spa}{metric.unit}
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 text-xs text-slate-400">Astro</div>
+							<div class="relative h-4 flex-1 overflow-hidden rounded bg-slate-700">
+								<div
+									class={`absolute left-0 top-0 h-full rounded transition-all duration-1000 ${isGood(metric.astro, metric) ? 'bg-purple-400' : 'bg-purple-500/60'}`}
+									style={`width: ${getBarWidth(metric.astro, metric)}%`}
+								></div>
+							</div>
+							<div class={`w-16 text-right text-sm ${isGood(metric.astro, metric) ? 'font-bold text-purple-400' : 'text-slate-400'}`}>
+								{metric.astro}{metric.unit}
+							</div>
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+	</div>
+</div>

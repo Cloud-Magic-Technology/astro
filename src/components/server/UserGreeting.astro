@@ -1,0 +1,26 @@
+---
+// Simulate fetching user data from a database/API
+// In a real app, this would be an actual async call
+const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 100));
+await simulateDelay();
+
+const user = {
+	name: 'Alex Developer',
+	avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex',
+	role: 'Full Stack Engineer',
+	lastLogin: new Date().toLocaleTimeString(),
+};
+---
+
+<div class="flex items-center gap-4">
+	<img
+		src={user.avatar}
+		alt={user.name}
+		class="h-12 w-12 rounded-full border-2 border-purple-500"
+	/>
+	<div>
+		<h3 class="font-semibold text-white">Welcome back, {user.name}!</h3>
+		<p class="text-sm text-slate-400">{user.role}</p>
+		<p class="text-xs text-slate-500">Last login: {user.lastLogin}</p>
+	</div>
+</div>

@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/state/ProductCard';
+import CartSidebar from '../components/state/CartSidebar.vue';
+import CheckoutButton from '../components/state/CheckoutButton.svelte';
+import InfoBox from '../components/shared/InfoBox.astro';
+import CodeBlock from '../components/shared/CodeBlock.astro';
+
+const products = [
+	{ id: 'astro-tee', name: 'Astro T-Shirt', price: 29.99, emoji: '👕', description: 'Comfy cotton tee with Astro logo' },
+	{ id: 'rocket-mug', name: 'Rocket Mug', price: 14.99, emoji: '🚀', description: 'Start your day with rocket fuel' },
+	{ id: 'island-hat', name: 'Islands Cap', price: 24.99, emoji: '🧢', description: 'Partial hydration, full style' },
+	{ id: 'zero-js-hoodie', name: 'Zero JS Hoodie', price: 49.99, emoji: '🧥', description: 'Ships with zero JavaScript' },
+	{ id: 'component-socks', name: 'Component Socks', price: 12.99, emoji: '🧦', description: 'Keep your feet framework-agnostic' },
+	{ id: 'build-time-bottle', name: 'Build Time Bottle', price: 19.99, emoji: '🍶', description: 'Hydration when you need it' },
+];
+---
+
+<Layout title="Cross-Framework State | Astro Lab" description="Demonstration of sharing state between React, Vue, and Svelte using Nano Stores">
+	<div class="mb-12">
+		<h1 class="mb-4 bg-gradient-to-r from-blue-400 via-green-400 to-orange-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+			Cross-Framework State Sharing
+		</h1>
+		<p class="text-lg text-slate-300">
+			Watch React, Vue, and Svelte components communicate seamlessly through shared state.
+			Add items with React, manage them with Vue, and checkout with Svelte.
+		</p>
+	</div>
+
+	<section class="mb-8">
+		<InfoBox type="tip" title="How It Works">
+			All three frameworks share the same Nano Stores cart state. When React adds an item,
+			Vue and Svelte see it immediately. This proves Astro's multi-framework architecture
+			isn't just about coexistence—it's about collaboration.
+		</InfoBox>
+	</section>
+
+	<div class="mb-12 grid gap-8 lg:grid-cols-3">
+		<div class="lg:col-span-2">
+			<div class="mb-4 flex items-center gap-2">
+				<h2 class="text-xl font-bold text-white">Products</h2>
+				<span class="rounded-full bg-blue-500/20 px-2 py-0.5 text-xs font-medium text-blue-400">
+					React Components
+				</span>
+			</div>
+			<div class="grid gap-4 sm:grid-cols-2">
+				{products.map((product) => (
+					<ProductCard client:load product={product} />
+				))}
+			</div>
+		</div>
+
+		<div class="space-y-4">
+			<CartSidebar client:load />
+			<CheckoutButton client:load />
+		</div>
+	</div>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">The Magic Behind It</h2>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<CodeBlock title="Shared Store (cart.ts)" lang="typescript">
+{`import { atom, computed } from 'nanostores';
+
+export const cartItems = atom<CartItem[]>([]);
+
+export const cartTotal = computed(cartItems, (items) =>
+  items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+);
+
+export function addToCart(item: CartItem) {
+  cartItems.set([...cartItems.get(), item]);
+}`}
+			</CodeBlock>
+
+			<CodeBlock title="React Usage" lang="tsx">
+{`import { addToCart } from '../stores/cart';
+
+function ProductCard({ product }) {
+  const handleAdd = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      framework: 'react',
+    });
+  };
+
+  return <button onClick={handleAdd}>Add</button>;
+}`}
+			</CodeBlock>
+
+			<CodeBlock title="Vue Usage" lang="vue">
+{`<script setup>
+import { useStore } from '@nanostores/vue';
+import { cartItems, cartTotal } from '../stores/cart';
+
+const items = useStore(cartItems);
+const total = useStore(cartTotal);
+</script>
+
+<template>
+  <div v-for="item in items">{{ item.name }}</div>
+  <span>Total: {{ total }}</span>
+</template>`}
+			</CodeBlock>
+
+			<CodeBlock title="Svelte Usage" lang="svelte">
+{`<script>
+  import { cartItems, clearCart } from '../stores/cart';
+
+  let items = $state([]);
+
+  $effect(() => {
+    return cartItems.subscribe(v => items = v);
+  });
+</script>
+
+<button onclick={() => clearCart()}>
+  Clear {items.length} items
+</button>`}
+			</CodeBlock>
+		</div>
+	</section>
+
+	<section>
+		<div class="rounded-xl border border-slate-700 bg-gradient-to-br from-blue-500/10 via-green-500/10 to-orange-500/10 p-6">
+			<h2 class="mb-4 text-xl font-bold text-white">Why This Matters</h2>
+			<div class="grid gap-4 md:grid-cols-3">
+				<div>
+					<h3 class="mb-2 font-semibold text-blue-400">Team Flexibility</h3>
+					<p class="text-sm text-slate-300">
+						Different teams can use their preferred framework. A React team's components
+						work alongside a Vue team's components.
+					</p>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-green-400">Gradual Migration</h3>
+					<p class="text-sm text-slate-300">
+						Migrate from one framework to another incrementally. No big bang rewrites—
+						just replace components one at a time.
+					</p>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-orange-400">Best Tool for the Job</h3>
+					<p class="text-sm text-slate-300">
+						Use React for complex forms, Vue for dashboards, Svelte for animations.
+						Pick the right tool for each component.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

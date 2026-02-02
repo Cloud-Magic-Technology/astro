@@ -1,0 +1,63 @@
+---
+const vitals = [
+	{
+		name: 'LCP',
+		fullName: 'Largest Contentful Paint',
+		description: 'Measures loading performance. Should occur within 2.5 seconds.',
+		good: '≤ 2.5s',
+		poor: '> 4.0s',
+		icon: '🖼️',
+		color: 'green',
+	},
+	{
+		name: 'INP',
+		fullName: 'Interaction to Next Paint',
+		description: 'Measures interactivity. Should be less than 200 milliseconds.',
+		good: '≤ 200ms',
+		poor: '> 500ms',
+		icon: '👆',
+		color: 'blue',
+	},
+	{
+		name: 'CLS',
+		fullName: 'Cumulative Layout Shift',
+		description: 'Measures visual stability. Should be less than 0.1.',
+		good: '≤ 0.1',
+		poor: '> 0.25',
+		icon: '📐',
+		color: 'purple',
+	},
+];
+
+const colorClasses = {
+	green: 'border-green-500/30 bg-green-500/10',
+	blue: 'border-blue-500/30 bg-blue-500/10',
+	purple: 'border-purple-500/30 bg-purple-500/10',
+};
+---
+
+<div class="space-y-4">
+	<h3 class="text-lg font-bold text-white">Core Web Vitals</h3>
+	<p class="text-sm text-slate-400">
+		Google's metrics for measuring user experience. Astro helps you achieve great scores by default.
+	</p>
+
+	<div class="grid gap-4 md:grid-cols-3">
+		{vitals.map((vital) => (
+			<div class={`rounded-xl border ${colorClasses[vital.color]} p-4`}>
+				<div class="mb-3 flex items-center gap-2">
+					<span class="text-2xl">{vital.icon}</span>
+					<div>
+						<h4 class="font-bold text-white">{vital.name}</h4>
+						<p class="text-xs text-slate-400">{vital.fullName}</p>
+					</div>
+				</div>
+				<p class="mb-3 text-sm text-slate-300">{vital.description}</p>
+				<div class="flex justify-between text-xs">
+					<span class="text-green-400">Good: {vital.good}</span>
+					<span class="text-red-400">Poor: {vital.poor}</span>
+				</div>
+			</div>
+		))}
+	</div>
+</div>

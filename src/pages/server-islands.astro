@@ -1,0 +1,219 @@
+---
+import Layout from '../layouts/Layout.astro';
+import UserGreeting from '../components/server/UserGreeting.astro';
+import LiveStats from '../components/server/LiveStats.astro';
+import SkeletonLoader from '../components/server/SkeletonLoader.astro';
+import InfoBox from '../components/shared/InfoBox.astro';
+import CodeBlock from '../components/shared/CodeBlock.astro';
+---
+
+<Layout title="Server Islands | Astro Lab" description="Mix static and dynamic content with Astro Server Islands">
+	<div class="mb-12">
+		<h1 class="mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+			Server Islands
+		</h1>
+		<p class="text-lg text-slate-300">
+			Combine the speed of static sites with the power of dynamic content.
+			The shell loads instantly while dynamic sections stream in.
+		</p>
+	</div>
+
+	<section class="mb-12">
+		<InfoBox type="info" title="What are Server Islands?">
+			Server Islands let you embed dynamic, server-rendered components within static pages.
+			The static shell loads immediately, then dynamic content streams in without blocking
+			the initial render. Perfect for personalized dashboards, live data, and user-specific content.
+		</InfoBox>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Live Dashboard Demo</h2>
+		<p class="mb-6 text-slate-400">
+			This dashboard demonstrates the concept. In production with <code>server:defer</code>,
+			the skeleton would show first, then be replaced by real content.
+		</p>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<!-- User Greeting Island -->
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<div class="mb-4 flex items-center justify-between">
+					<span class="text-sm font-medium text-slate-400">User Profile</span>
+					<span class="rounded-full bg-cyan-500/20 px-2 py-0.5 text-xs text-cyan-400">
+						Server Island
+					</span>
+				</div>
+				<UserGreeting />
+			</div>
+
+			<!-- Live Stats Island -->
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<div class="mb-4 flex items-center justify-between">
+					<span class="text-sm font-medium text-slate-400">Analytics</span>
+					<span class="rounded-full bg-cyan-500/20 px-2 py-0.5 text-xs text-cyan-400">
+						Server Island
+					</span>
+				</div>
+				<LiveStats />
+			</div>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Loading States</h2>
+		<p class="mb-6 text-slate-400">
+			While server islands load, you can show skeleton placeholders.
+			Here's what users see during the brief loading period:
+		</p>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<h3 class="mb-4 text-sm font-medium text-slate-400">User Profile (Loading)</h3>
+				<SkeletonLoader showAvatar={true} lines={2} />
+			</div>
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<h3 class="mb-4 text-sm font-medium text-slate-400">Content (Loading)</h3>
+				<SkeletonLoader lines={4} />
+			</div>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Implementation</h2>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<CodeBlock title="Server Island Syntax" lang="astro">
+{`---
+// Static page with server islands
+import UserProfile from './UserProfile.astro';
+import LiveStats from './LiveStats.astro';
+---
+
+<!-- Static content loads instantly -->
+<h1>Dashboard</h1>
+
+<!-- Dynamic content streams in -->
+<UserProfile server:defer>
+  <Skeleton slot="fallback" />
+</UserProfile>
+
+<LiveStats server:defer>
+  <LoadingSpinner slot="fallback" />
+</LiveStats>`}
+			</CodeBlock>
+
+			<CodeBlock title="Server Island Component" lang="astro">
+{`---
+// UserProfile.astro
+// This runs on the server for each request
+
+const user = await db.users.findOne({
+  id: Astro.locals.userId
+});
+
+const stats = await analytics.getStats({
+  userId: user.id,
+  period: '7d'
+});
+---
+
+<div class="profile-card">
+  <img src={user.avatar} alt={user.name} />
+  <h2>Welcome, {user.name}!</h2>
+  <p>{stats.visits} visits this week</p>
+</div>`}
+			</CodeBlock>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Static vs Dynamic Content</h2>
+
+		<div class="overflow-hidden rounded-xl border border-slate-700">
+			<div class="grid md:grid-cols-2">
+				<div class="border-b border-slate-700 bg-slate-800 p-6 md:border-b-0 md:border-r">
+					<h3 class="mb-4 flex items-center gap-2 font-semibold text-green-400">
+						<span class="text-xl">⚡</span>
+						Static Shell (Instant)
+					</h3>
+					<ul class="space-y-2 text-sm text-slate-300">
+						<li class="flex items-center gap-2">
+							<span class="text-green-400">•</span>
+							Navigation and layout
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-green-400">•</span>
+							Page structure and styling
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-green-400">•</span>
+							Static content and images
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-green-400">•</span>
+							Loading skeletons
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-green-400">•</span>
+							SEO-critical content
+						</li>
+					</ul>
+				</div>
+				<div class="bg-slate-800/50 p-6">
+					<h3 class="mb-4 flex items-center gap-2 font-semibold text-cyan-400">
+						<span class="text-xl">🌊</span>
+						Server Islands (Streamed)
+					</h3>
+					<ul class="space-y-2 text-sm text-slate-300">
+						<li class="flex items-center gap-2">
+							<span class="text-cyan-400">•</span>
+							User-specific content
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-cyan-400">•</span>
+							Real-time data and stats
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-cyan-400">•</span>
+							Personalized recommendations
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-cyan-400">•</span>
+							Shopping cart contents
+						</li>
+						<li class="flex items-center gap-2">
+							<span class="text-cyan-400">•</span>
+							Authentication state
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="rounded-xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 p-6">
+			<h2 class="mb-4 text-xl font-bold text-white">When to Use Server Islands</h2>
+			<div class="grid gap-4 md:grid-cols-2">
+				<div>
+					<h3 class="mb-2 font-semibold text-green-400">Great For</h3>
+					<ul class="space-y-1 text-sm text-slate-300">
+						<li>• E-commerce (cart, pricing, inventory)</li>
+						<li>• Dashboards with live metrics</li>
+						<li>• Personalized content feeds</li>
+						<li>• A/B testing variations</li>
+						<li>• Geolocation-based content</li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-amber-400">Consider Alternatives</h3>
+					<ul class="space-y-1 text-sm text-slate-300">
+						<li>• Fully static content (use static rendering)</li>
+						<li>• Client-only interactions (use client islands)</li>
+						<li>• Data that rarely changes (use ISR/caching)</li>
+						<li>• Simple CRUD apps (use full SSR)</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

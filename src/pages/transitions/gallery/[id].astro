@@ -1,0 +1,73 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { galleryItems, type GalleryItem } from '../../../data/gallery';
+
+export function getStaticPaths() {
+	return galleryItems.map((item) => ({
+		params: { id: item.id },
+		props: { item },
+	}));
+}
+
+interface Props {
+	item: GalleryItem;
+}
+
+const { item } = Astro.props;
+---
+
+<Layout title={`${item.title} | Gallery`} description={item.description}>
+	<div class="mb-6">
+		<a href="/transitions/gallery" class="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300">
+			← Back to Gallery
+		</a>
+	</div>
+
+	<article class="overflow-hidden rounded-xl border border-slate-700 bg-slate-800">
+		<div class="relative aspect-video overflow-hidden bg-slate-900">
+			<img
+				src={item.image}
+				alt={item.title}
+				class="h-full w-full object-cover"
+				transition:name={`image-${item.id}`}
+			/>
+			<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+			<span
+				class="absolute bottom-4 left-4 rounded-full bg-purple-500/80 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm"
+				transition:name={`category-${item.id}`}
+			>
+				{item.category}
+			</span>
+		</div>
+
+		<div class="p-6">
+			<h1 class="mb-4 text-3xl font-bold text-white" transition:name={`title-${item.id}`}>
+				{item.title}
+			</h1>
+
+			<p class="mb-6 text-lg text-slate-300">{item.description}</p>
+
+			<div class="rounded-lg border border-slate-700 bg-slate-900 p-4">
+				<h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Details</h2>
+				<ul class="space-y-2">
+					{item.details.map((detail) => (
+						<li class="flex items-start gap-2 text-slate-300">
+							<span class="text-purple-400">•</span>
+							{detail}
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	</article>
+
+	<div class="mt-8 rounded-lg border border-slate-700 bg-slate-800/50 p-4">
+		<h3 class="mb-2 font-semibold text-white">About This Transition</h3>
+		<p class="text-sm text-slate-400">
+			Notice how the image, title, and category badge smoothly animated from their positions
+			in the grid to their new layout on this page. This is achieved with matching
+			<code class="rounded bg-slate-700 px-1 text-purple-300">transition:name</code> attributes
+			on both pages. No JavaScript router required!
+		</p>
+	</div>
+</Layout>

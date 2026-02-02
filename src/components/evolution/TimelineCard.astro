@@ -1,0 +1,104 @@
+---
+interface Props {
+	era: string;
+	title: string;
+	years: string;
+	color: 'blue' | 'green' | 'orange' | 'purple';
+	pros: string[];
+	cons: string[];
+	tech: string[];
+}
+
+const { era, title, years, color, pros, cons, tech } = Astro.props;
+
+const colorClasses = {
+	blue: {
+		border: 'border-blue-500',
+		bg: 'bg-blue-500',
+		text: 'text-blue-400',
+		glow: 'shadow-blue-500/20',
+	},
+	green: {
+		border: 'border-green-500',
+		bg: 'bg-green-500',
+		text: 'text-green-400',
+		glow: 'shadow-green-500/20',
+	},
+	orange: {
+		border: 'border-orange-500',
+		bg: 'bg-orange-500',
+		text: 'text-orange-400',
+		glow: 'shadow-orange-500/20',
+	},
+	purple: {
+		border: 'border-purple-500',
+		bg: 'bg-purple-500',
+		text: 'text-purple-400',
+		glow: 'shadow-purple-500/20',
+	},
+};
+
+const classes = colorClasses[color];
+---
+
+<div class={`timeline-card relative rounded-xl border ${classes.border} bg-slate-800/50 p-6 shadow-lg ${classes.glow} transition-all duration-300 hover:scale-[1.02]`}>
+	<div class="mb-4 flex items-center justify-between">
+		<span class={`rounded-full ${classes.bg} px-3 py-1 text-sm font-bold text-white`}>
+			{era}
+		</span>
+		<span class="text-sm text-slate-500">{years}</span>
+	</div>
+
+	<h3 class={`mb-4 text-xl font-bold ${classes.text}`}>{title}</h3>
+
+	<div class="mb-4 flex flex-wrap gap-2">
+		{tech.map((t) => (
+			<span class="rounded bg-slate-700/50 px-2 py-1 text-xs text-slate-300">{t}</span>
+		))}
+	</div>
+
+	<div class="grid gap-4 md:grid-cols-2">
+		<div>
+			<h4 class="mb-2 text-sm font-semibold text-green-400">Advantages</h4>
+			<ul class="space-y-1">
+				{pros.map((pro) => (
+					<li class="flex items-start gap-2 text-sm text-slate-300">
+						<span class="text-green-400">+</span>
+						{pro}
+					</li>
+				))}
+			</ul>
+		</div>
+		<div>
+			<h4 class="mb-2 text-sm font-semibold text-red-400">Challenges</h4>
+			<ul class="space-y-1">
+				{cons.map((con) => (
+					<li class="flex items-start gap-2 text-sm text-slate-300">
+						<span class="text-red-400">-</span>
+						{con}
+					</li>
+				))}
+			</ul>
+		</div>
+	</div>
+
+	<slot />
+</div>
+
+<style>
+	.timeline-card {
+		animation: fadeInUp 0.6s ease-out forwards;
+		opacity: 0;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

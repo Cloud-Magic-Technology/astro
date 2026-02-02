@@ -1,0 +1,56 @@
+---
+interface Bundle {
+	name: string;
+	size: number;
+	color: string;
+}
+
+const bundles: Bundle[] = [
+	{ name: 'React SPA (typical)', size: 142, color: 'bg-blue-500' },
+	{ name: 'Vue SPA (typical)', size: 95, color: 'bg-green-500' },
+	{ name: 'Svelte SPA (typical)', size: 45, color: 'bg-orange-500' },
+	{ name: 'Astro (this page)', size: 12, color: 'bg-purple-500' },
+];
+
+const maxSize = Math.max(...bundles.map(b => b.size));
+---
+
+<div class="rounded-xl border border-slate-700 bg-slate-800/50 p-6">
+	<h3 class="mb-2 text-lg font-bold text-white">JavaScript Bundle Size Comparison</h3>
+	<p class="mb-6 text-sm text-slate-400">
+		Approximate JS sent to browser for a typical interactive page
+	</p>
+
+	<div class="space-y-4">
+		{bundles.map((bundle) => (
+			<div>
+				<div class="mb-1 flex items-center justify-between text-sm">
+					<span class="text-slate-300">{bundle.name}</span>
+					<span class="font-mono text-slate-400">{bundle.size} KB</span>
+				</div>
+				<div class="relative h-6 overflow-hidden rounded bg-slate-700">
+					<div
+						class={`absolute left-0 top-0 h-full ${bundle.color} transition-all duration-1000`}
+						style={`width: ${(bundle.size / maxSize) * 100}%`}
+					>
+						<div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/10"></div>
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+
+	<div class="mt-6 rounded-lg border border-purple-500/30 bg-purple-500/10 p-4">
+		<div class="flex items-start gap-3">
+			<span class="text-2xl">🚀</span>
+			<div>
+				<p class="font-semibold text-purple-300">
+					Astro ships {Math.round((1 - bundles[3].size / bundles[0].size) * 100)}% less JavaScript
+				</p>
+				<p class="text-sm text-slate-400">
+					By only hydrating interactive components, Astro dramatically reduces bundle size.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

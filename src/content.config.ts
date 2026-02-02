@@ -14,4 +14,14 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+const showcase = defineCollection({
+	loader: glob({ pattern: '**/*.mdx', base: './src/content/showcase' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		order: z.number().default(0),
+		icon: z.string().optional(),
+	}),
+});
+
+export const collections = { blog, showcase };

@@ -1,0 +1,151 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import InfoBox from '../../components/shared/InfoBox.astro';
+import CodeBlock from '../../components/shared/CodeBlock.astro';
+---
+
+<Layout title="View Transitions | Astro Lab" description="SPA-like navigation without SPA downsides using Astro View Transitions">
+	<div class="mb-12">
+		<h1 class="mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+			View Transitions
+		</h1>
+		<p class="text-lg text-slate-300">
+			SPA-like page transitions with zero JavaScript framework. Native browser APIs,
+			full page navigation, and smooth animations.
+		</p>
+	</div>
+
+	<section class="mb-12">
+		<InfoBox type="info" title="What are View Transitions?">
+			View Transitions API lets you animate between page navigations, creating smooth morphing
+			effects between elements. Astro makes this trivially easy with the <code>transition:name</code>
+			directive.
+		</InfoBox>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Try It Yourself</h2>
+		<a
+			href="/transitions/gallery"
+			class="group block overflow-hidden rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-8 transition-all hover:border-purple-500/50"
+		>
+			<div class="flex items-center justify-between">
+				<div>
+					<h3 class="mb-2 text-xl font-bold text-white group-hover:text-purple-400">
+						Image Gallery Demo
+					</h3>
+					<p class="text-slate-300">
+						Click through the gallery to see images morph between list and detail views.
+						Use your browser's back button—the transition works both ways.
+					</p>
+				</div>
+				<span class="text-4xl transition-transform group-hover:translate-x-2">→</span>
+			</div>
+		</a>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">How It Works</h2>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<CodeBlock title="Enable View Transitions" lang="astro">
+{`---
+// In your layout or page
+import { ViewTransitions } from 'astro:transitions';
+---
+
+<html>
+  <head>
+    <ViewTransitions />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>`}
+			</CodeBlock>
+
+			<CodeBlock title="Name Your Elements" lang="astro">
+{`<!-- List page -->
+<img
+  src={item.image}
+  transition:name={\`image-\${item.id}\`}
+/>
+
+<!-- Detail page -->
+<img
+  src={item.image}
+  transition:name={\`image-\${item.id}\`}
+/>
+
+<!-- Same name = morph animation! -->`}
+			</CodeBlock>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Transition Types</h2>
+
+		<div class="grid gap-4 md:grid-cols-2">
+			<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+				<h3 class="mb-2 font-semibold text-purple-400">morph (default)</h3>
+				<p class="text-sm text-slate-300">
+					Elements with matching <code>transition:name</code> smoothly transform between pages.
+					Size, position, and content animate together.
+				</p>
+			</div>
+			<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+				<h3 class="mb-2 font-semibold text-cyan-400">fade</h3>
+				<p class="text-sm text-slate-300">
+					Cross-fade between old and new content. Use <code>transition:animate="fade"</code>
+					for simple opacity transitions.
+				</p>
+			</div>
+			<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+				<h3 class="mb-2 font-semibold text-green-400">slide</h3>
+				<p class="text-sm text-slate-300">
+					Slide content in from the side. Great for navigation patterns.
+					Use <code>transition:animate="slide"</code>.
+				</p>
+			</div>
+			<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+				<h3 class="mb-2 font-semibold text-amber-400">Custom</h3>
+				<p class="text-sm text-slate-300">
+					Define your own CSS animations with <code>transition:animate={'{myAnimation}'}</code>.
+					Full control over keyframes and timing.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-6">
+			<h2 class="mb-4 text-xl font-bold text-white">Benefits Over SPAs</h2>
+			<ul class="grid gap-3 md:grid-cols-2">
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>No client-side router needed</span>
+				</li>
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>Works with browser navigation</span>
+				</li>
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>Native browser API (progressive enhancement)</span>
+				</li>
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>Zero JavaScript for basic transitions</span>
+				</li>
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>SEO-friendly full page navigation</span>
+				</li>
+				<li class="flex items-start gap-2 text-slate-300">
+					<span class="text-green-400">✓</span>
+					<span>Accessible by default</span>
+				</li>
+			</ul>
+		</div>
+	</section>
+</Layout>

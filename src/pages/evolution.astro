@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TimelineCard from '../components/evolution/TimelineCard.astro';
+import EraComparison from '../components/evolution/EraComparison.astro';
+import ScrollReveal from '../components/evolution/ScrollReveal.astro';
+import InfoBox from '../components/shared/InfoBox.astro';
+
+const eras = [
+	{
+		era: 'Era 1',
+		title: 'Static HTML',
+		years: '1991-1999',
+		color: 'blue' as const,
+		tech: ['HTML', 'CSS', 'Tables', 'Frames'],
+		pros: ['Blazing fast', 'Simple to deploy', 'Works everywhere', 'No server needed'],
+		cons: ['No interactivity', 'Hard to maintain', 'Limited functionality', 'Repetitive code'],
+	},
+	{
+		era: 'Era 2',
+		title: 'Server-Side Rendering',
+		years: '2000-2009',
+		color: 'green' as const,
+		tech: ['PHP', 'ASP.NET', 'Ruby on Rails', 'JSP'],
+		pros: ['Dynamic content', 'Database integration', 'User authentication', 'Good SEO'],
+		cons: ['Full page reloads', 'Server load', 'Slower interactions', 'Complex deployment'],
+	},
+	{
+		era: 'Era 3',
+		title: 'SPA Revolution',
+		years: '2010-2019',
+		color: 'orange' as const,
+		tech: ['React', 'Angular', 'Vue', 'Webpack'],
+		pros: ['App-like experience', 'Fast navigation', 'Rich interactions', 'Great DX'],
+		cons: ['Large JS bundles', 'Poor initial load', 'SEO challenges', 'Accessibility issues'],
+	},
+	{
+		era: 'Era 4',
+		title: 'The Astro Way',
+		years: '2020-Present',
+		color: 'purple' as const,
+		tech: ['Astro', 'Islands', 'Partial Hydration', 'Multi-Framework'],
+		pros: ['Zero JS by default', 'Use any framework', 'Great performance', 'Perfect SEO'],
+		cons: ['Learning curve', 'Newer ecosystem', 'Some edge cases', 'Paradigm shift'],
+	},
+];
+---
+
+<Layout title="Evolution of Web Development | Astro Lab" description="A journey through the eras of web development and how Astro solves each generation's problems">
+	<div class="mb-12">
+		<ScrollReveal>
+			<h1 class="mb-4 bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+				The Evolution of Web Development
+			</h1>
+			<p class="text-lg text-slate-300">
+				A journey through three decades of innovation, and how Astro represents
+				the culmination of lessons learned.
+			</p>
+		</ScrollReveal>
+	</div>
+
+	<section class="mb-16">
+		<ScrollReveal delay={100}>
+			<InfoBox type="tip" title="The Web's Journey">
+				Every era solved real problems but introduced new ones. Astro's genius is recognizing
+				that the best solution isn't choosing one approach—it's combining them intelligently.
+			</InfoBox>
+		</ScrollReveal>
+	</section>
+
+	<section class="relative mb-16">
+		<div class="absolute left-4 top-0 hidden h-full w-0.5 bg-gradient-to-b from-blue-500 via-green-500 via-orange-500 to-purple-500 md:block"></div>
+
+		<div class="space-y-8 md:pl-12">
+			{eras.map((era, index) => (
+				<ScrollReveal delay={index * 150}>
+					<TimelineCard {...era} />
+				</ScrollReveal>
+			))}
+		</div>
+	</section>
+
+	<section class="mb-16">
+		<ScrollReveal delay={100}>
+			<h2 class="mb-6 text-2xl font-bold text-white">The Numbers Don't Lie</h2>
+			<EraComparison />
+		</ScrollReveal>
+	</section>
+
+	<section class="mb-16">
+		<ScrollReveal delay={100}>
+			<div class="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 p-8">
+				<h2 class="mb-4 text-2xl font-bold text-white">Why Astro Wins</h2>
+				<div class="grid gap-6 md:grid-cols-2">
+					<div>
+						<h3 class="mb-2 font-semibold text-purple-400">Ship Less JavaScript</h3>
+						<p class="text-sm text-slate-300">
+							Astro renders your components to HTML at build time, sending zero JavaScript
+							by default. Interactive components only ship the JS they need.
+						</p>
+					</div>
+					<div>
+						<h3 class="mb-2 font-semibold text-cyan-400">Use Any Framework</h3>
+						<p class="text-sm text-slate-300">
+							React, Vue, Svelte, Solid, Preact—use what you know. Mix and match
+							frameworks in the same project without conflict.
+						</p>
+					</div>
+					<div>
+						<h3 class="mb-2 font-semibold text-green-400">Islands Architecture</h3>
+						<p class="text-sm text-slate-300">
+							Only hydrate the interactive parts. A static page with one interactive
+							widget ships only that widget's JavaScript.
+						</p>
+					</div>
+					<div>
+						<h3 class="mb-2 font-semibold text-amber-400">Content-First</h3>
+						<p class="text-sm text-slate-300">
+							Built for content sites, blogs, docs, and marketing pages. MDX support,
+							content collections, and excellent SEO out of the box.
+						</p>
+					</div>
+				</div>
+			</div>
+		</ScrollReveal>
+	</section>
+
+	<section>
+		<ScrollReveal delay={100}>
+			<div class="text-center">
+				<h2 class="mb-4 text-2xl font-bold text-white">Ready to See It in Action?</h2>
+				<p class="mb-6 text-slate-300">
+					Explore our interactive demos to see how Astro's features work in practice.
+				</p>
+				<div class="flex flex-wrap justify-center gap-4">
+					<a href="/playground" class="rounded-lg bg-purple-600 px-6 py-3 font-medium text-white hover:bg-purple-700">
+						Try the Playground
+					</a>
+					<a href="/performance" class="rounded-lg border border-purple-500 px-6 py-3 font-medium text-purple-400 hover:bg-purple-500/20">
+						View Performance Stats
+					</a>
+				</div>
+			</div>
+		</ScrollReveal>
+	</section>
+</Layout>

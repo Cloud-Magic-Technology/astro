@@ -1,0 +1,180 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NewsletterForm from '../components/api/NewsletterForm.astro';
+import ApiTester from '../components/api/ApiTester';
+import InfoBox from '../components/shared/InfoBox.astro';
+import CodeBlock from '../components/shared/CodeBlock.astro';
+---
+
+<Layout title="API Demo | Astro Lab" description="Full-stack Astro with API routes and server endpoints">
+	<div class="mb-12">
+		<h1 class="mb-4 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+			Server Endpoints
+		</h1>
+		<p class="text-lg text-slate-300">
+			Astro isn't just for static sites. Build full-stack applications with
+			API routes, form handling, and server-side logic.
+		</p>
+	</div>
+
+	<section class="mb-12">
+		<InfoBox type="info" title="Full-Stack Astro">
+			Astro can handle server-side logic through API routes (endpoints). These run on the
+			server and can connect to databases, call external APIs, process forms, and more.
+			Perfect for adding dynamic functionality to your static site.
+		</InfoBox>
+	</section>
+
+	<div class="mb-12 grid gap-8 lg:grid-cols-2">
+		<section>
+			<div class="mb-4 flex items-center gap-2">
+				<h2 class="text-xl font-bold text-white">Newsletter Signup</h2>
+				<span class="rounded-full bg-purple-500/20 px-2 py-0.5 text-xs text-purple-400">
+					POST /api/subscribe
+				</span>
+			</div>
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<NewsletterForm />
+			</div>
+		</section>
+
+		<section>
+			<div class="mb-4 flex items-center gap-2">
+				<h2 class="text-xl font-bold text-white">API Explorer</h2>
+				<span class="rounded-full bg-blue-500/20 px-2 py-0.5 text-xs text-blue-400">
+					Interactive
+				</span>
+			</div>
+			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+				<ApiTester client:load />
+			</div>
+		</section>
+	</div>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Creating API Routes</h2>
+
+		<div class="grid gap-6 md:grid-cols-2">
+			<CodeBlock title="GET Endpoint" lang="typescript">
+{`// src/pages/api/stats.ts
+import type { APIRoute } from 'astro';
+
+export const GET: APIRoute = async ({ url }) => {
+  const section = url.searchParams.get('section');
+
+  const stats = await fetchStats(section);
+
+  return new Response(
+    JSON.stringify({ success: true, data: stats }),
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};`}
+			</CodeBlock>
+
+			<CodeBlock title="POST Endpoint" lang="typescript">
+{`// src/pages/api/subscribe.ts
+import type { APIRoute } from 'astro';
+
+export const POST: APIRoute = async ({ request }) => {
+  const { email, name } = await request.json();
+
+  // Validate input
+  if (!email || !isValidEmail(email)) {
+    return new Response(
+      JSON.stringify({ error: 'Invalid email' }),
+      { status: 400 }
+    );
+  }
+
+  // Save to database
+  await db.subscribers.create({ email, name });
+
+  return new Response(
+    JSON.stringify({ success: true }),
+    { status: 200 }
+  );
+};`}
+			</CodeBlock>
+		</div>
+	</section>
+
+	<section class="mb-12">
+		<h2 class="mb-6 text-2xl font-bold text-white">Available Endpoints</h2>
+
+		<div class="overflow-hidden rounded-xl border border-slate-700">
+			<table class="w-full text-left">
+				<thead class="border-b border-slate-700 bg-slate-900">
+					<tr>
+						<th class="px-4 py-3 text-sm font-semibold text-slate-300">Method</th>
+						<th class="px-4 py-3 text-sm font-semibold text-slate-300">Endpoint</th>
+						<th class="px-4 py-3 text-sm font-semibold text-slate-300">Description</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-slate-700 bg-slate-800">
+					<tr>
+						<td class="px-4 py-3">
+							<span class="rounded bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-400">GET</span>
+						</td>
+						<td class="px-4 py-3 font-mono text-sm text-slate-300">/api/stats</td>
+						<td class="px-4 py-3 text-sm text-slate-400">Returns site statistics and metrics</td>
+					</tr>
+					<tr>
+						<td class="px-4 py-3">
+							<span class="rounded bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-400">GET</span>
+						</td>
+						<td class="px-4 py-3 font-mono text-sm text-slate-300">/api/stats?section=visitors</td>
+						<td class="px-4 py-3 text-sm text-slate-400">Returns only visitor statistics</td>
+					</tr>
+					<tr>
+						<td class="px-4 py-3">
+							<span class="rounded bg-blue-500/20 px-2 py-0.5 text-xs font-medium text-blue-400">POST</span>
+						</td>
+						<td class="px-4 py-3 font-mono text-sm text-slate-300">/api/subscribe</td>
+						<td class="px-4 py-3 text-sm text-slate-400">Subscribe to newsletter (email, name)</td>
+					</tr>
+					<tr>
+						<td class="px-4 py-3">
+							<span class="rounded bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-400">GET</span>
+						</td>
+						<td class="px-4 py-3 font-mono text-sm text-slate-300">/api/subscribe</td>
+						<td class="px-4 py-3 text-sm text-slate-400">Returns endpoint documentation</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<section>
+		<div class="rounded-xl border border-green-500/30 bg-gradient-to-br from-green-500/10 to-emerald-500/10 p-6">
+			<h2 class="mb-4 text-xl font-bold text-white">Why Server Endpoints?</h2>
+			<div class="grid gap-4 md:grid-cols-3">
+				<div>
+					<h3 class="mb-2 font-semibold text-green-400">Secure by Default</h3>
+					<p class="text-sm text-slate-300">
+						Server code never reaches the client. API keys, database connections,
+						and business logic stay on the server.
+					</p>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-emerald-400">Same Codebase</h3>
+					<p class="text-sm text-slate-300">
+						No need for a separate backend. Your API lives alongside your pages
+						in the same Astro project.
+					</p>
+				</div>
+				<div>
+					<h3 class="mb-2 font-semibold text-teal-400">Edge Ready</h3>
+					<p class="text-sm text-slate-300">
+						Deploy to Cloudflare Workers, Vercel Edge, or Deno Deploy for
+						globally distributed, low-latency APIs.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>

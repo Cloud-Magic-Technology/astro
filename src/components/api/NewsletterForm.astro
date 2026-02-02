@@ -1,0 +1,78 @@
+---
+---
+
+<form id="newsletter-form" class="space-y-4">
+	<div>
+		<label for="name" class="mb-1 block text-sm text-slate-400">Name (optional)</label>
+		<input
+			type="text"
+			id="name"
+			name="name"
+			placeholder="Your name"
+			class="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+		/>
+	</div>
+	<div>
+		<label for="email" class="mb-1 block text-sm text-slate-400">Email (required)</label>
+		<input
+			type="email"
+			id="email"
+			name="email"
+			placeholder="you@example.com"
+			required
+			class="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+		/>
+	</div>
+	<button
+		type="submit"
+		class="w-full rounded-lg bg-purple-600 px-4 py-2 font-medium text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
+	>
+		Subscribe
+	</button>
+	<div id="form-message" class="hidden rounded-lg p-3 text-sm"></div>
+</form>
+
+<script>
+	const form = document.getElementById('newsletter-form') as HTMLFormElement;
+	const messageDiv = document.getElementById('form-message') as HTMLDivElement;
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+
+		const formData = new FormData(form);
+		const email = formData.get('email');
+		const name = formData.get('name');
+
+		const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+		submitButton.disabled = true;
+		submitButton.textContent = 'Subscribing...';
+
+		try {
+			const response = await fetch('/api/subscribe', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, name }),
+			});
+
+			const result = await response.json();
+
+			messageDiv.classList.remove('hidden', 'bg-green-500/20', 'text-green-400', 'bg-red-500/20', 'text-red-400');
+
+			if (result.success) {
+				messageDiv.classList.add('bg-green-500/20', 'text-green-400');
+				messageDiv.textContent = result.message;
+				form.reset();
+			} else {
+				messageDiv.classList.add('bg-red-500/20', 'text-red-400');
+				messageDiv.textContent = result.error;
+			}
+		} catch (error) {
+			messageDiv.classList.remove('hidden', 'bg-green-500/20', 'text-green-400');
+			messageDiv.classList.add('bg-red-500/20', 'text-red-400');
+			messageDiv.textContent = 'Something went wrong. Please try again.';
+		} finally {
+			submitButton.disabled = false;
+			submitButton.textContent = 'Subscribe';
+		}
+	});
+</script>

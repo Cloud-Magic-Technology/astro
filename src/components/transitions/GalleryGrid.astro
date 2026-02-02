@@ -1,0 +1,29 @@
+---
+import TransitionCard from './TransitionCard.astro';
+
+interface Item {
+	id: string;
+	title: string;
+	image: string;
+	category: string;
+}
+
+interface Props {
+	items: Item[];
+	basePath?: string;
+}
+
+const { items, basePath = '/transitions/gallery' } = Astro.props;
+---
+
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+	{items.map((item) => (
+		<TransitionCard
+			id={item.id}
+			title={item.title}
+			image={item.image}
+			category={item.category}
+			href={`${basePath}/${item.id}`}
+		/>
+	))}
+</div>

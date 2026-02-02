@@ -1,0 +1,71 @@
+---
+title: "Interactive MDX Demo"
+description: "Experience the power of MDX with embedded interactive components"
+order: 1
+icon: "🎮"
+---
+
+import InteractiveCounter from '../../components/mdx/InteractiveCounter';
+import Callout from '../../components/mdx/Callout.astro';
+
+# Interactive MDX Content
+
+MDX lets you use JSX components directly in your Markdown content. This means you can create rich, interactive documentation and blog posts.
+
+## Embedded React Component
+
+Here's a fully interactive React component embedded in this MDX file:
+
+<InteractiveCounter client:visible initialValue={10} step={5} label="Step Counter" />
+
+The component above is hydrated when it scrolls into view (`client:visible`), demonstrating Astro's partial hydration in MDX content.
+
+## Custom Callout Components
+
+<Callout type="tip" title="Pro Tip">
+  MDX components can be Astro components too! This callout is a static Astro component
+  that ships zero JavaScript.
+</Callout>
+
+<Callout type="warning">
+  Remember that interactive components need a `client:` directive to hydrate.
+  Without it, they render as static HTML.
+</Callout>
+
+<Callout type="note" title="Did you know?">
+  Astro's MDX integration automatically handles imports and component rendering.
+  Just import your components and use them like HTML tags.
+</Callout>
+
+## Code with Explanation
+
+You can mix code blocks with interactive examples:
+
+```tsx
+// This is the component used above
+export default function InteractiveCounter({ step = 1 }) {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount(c => c + step)}>
+      Count: {count}
+    </button>
+  );
+}
+```
+
+Try changing the step value in the component above to see how props work!
+
+## Another Interactive Example
+
+<InteractiveCounter client:load initialValue={0} step={1} label="Basic Counter" />
+
+This counter uses `client:load` to hydrate immediately when the page loads.
+
+## Benefits of MDX
+
+1. **Write content naturally** - Use Markdown for prose
+2. **Add interactivity** - Embed framework components where needed
+3. **Reuse components** - Same components work in pages and content
+4. **Type safety** - Full TypeScript support for component props
+5. **Content collections** - Organize and query your MDX content

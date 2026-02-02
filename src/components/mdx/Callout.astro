@@ -1,0 +1,32 @@
+---
+interface Props {
+	type?: 'note' | 'tip' | 'warning' | 'danger';
+	title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const styles = {
+	note: { border: 'border-blue-500', bg: 'bg-blue-500/10', icon: 'i', iconBg: 'bg-blue-500/20', text: 'text-blue-300' },
+	tip: { border: 'border-green-500', bg: 'bg-green-500/10', icon: '★', iconBg: 'bg-green-500/20', text: 'text-green-300' },
+	warning: { border: 'border-amber-500', bg: 'bg-amber-500/10', icon: '!', iconBg: 'bg-amber-500/20', text: 'text-amber-300' },
+	danger: { border: 'border-red-500', bg: 'bg-red-500/10', icon: '✕', iconBg: 'bg-red-500/20', text: 'text-red-300' },
+};
+
+const style = styles[type];
+const defaultTitles = { note: 'Note', tip: 'Tip', warning: 'Warning', danger: 'Danger' };
+---
+
+<div class={`my-4 rounded-lg border-l-4 ${style.border} ${style.bg} p-4`}>
+	<div class="flex items-start gap-3">
+		<span class={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${style.iconBg} ${style.text} text-sm font-bold`}>
+			{style.icon}
+		</span>
+		<div>
+			<h4 class={`mb-1 font-semibold ${style.text}`}>{title || defaultTitles[type]}</h4>
+			<div class="text-sm text-slate-300">
+				<slot />
+			</div>
+		</div>
+	</div>
+</div>

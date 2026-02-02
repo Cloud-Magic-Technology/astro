@@ -1,0 +1,37 @@
+---
+interface Props {
+	id: string;
+	title: string;
+	image: string;
+	category: string;
+	href: string;
+}
+
+const { id, title, image, category, href } = Astro.props;
+---
+
+<a
+	href={href}
+	class="group block overflow-hidden rounded-xl border border-slate-700 bg-slate-800 transition-all hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10"
+>
+	<div class="relative aspect-video overflow-hidden bg-slate-900">
+		<img
+			src={image}
+			alt={title}
+			class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+			transition:name={`image-${id}`}
+		/>
+		<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+		<span
+			class="absolute bottom-3 left-3 rounded-full bg-purple-500/80 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
+			transition:name={`category-${id}`}
+		>
+			{category}
+		</span>
+	</div>
+	<div class="p-4">
+		<h3 class="font-semibold text-white transition-colors group-hover:text-purple-400" transition:name={`title-${id}`}>
+			{title}
+		</h3>
+	</div>
+</a>

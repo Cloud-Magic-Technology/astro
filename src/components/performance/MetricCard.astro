@@ -1,0 +1,78 @@
+---
+interface Props {
+	label: string;
+	value: number;
+	maxValue?: number;
+	suffix?: string;
+	description?: string;
+	color?: 'green' | 'yellow' | 'red' | 'blue' | 'purple';
+}
+
+const { label, value, maxValue = 100, suffix = '', description, color = 'green' } = Astro.props;
+
+const percentage = Math.min((value / maxValue) * 100, 100);
+
+const colorClasses = {
+	green: 'text-green-400 bg-green-500',
+	yellow: 'text-yellow-400 bg-yellow-500',
+	red: 'text-red-400 bg-red-500',
+	blue: 'text-blue-400 bg-blue-500',
+	purple: 'text-purple-400 bg-purple-500',
+};
+
+const textColor = colorClasses[color].split(' ')[0];
+const bgColor = colorClasses[color].split(' ')[1];
+---
+
+<div class="metric-card rounded-xl border border-slate-700 bg-slate-800 p-6">
+	<div class="mb-4 flex items-center justify-between">
+		<span class="text-sm font-medium text-slate-400">{label}</span>
+		<span class={`text-3xl font-bold ${textColor}`}>
+			{value}{suffix}
+		</span>
+	</div>
+
+	<div class="relative h-3 overflow-hidden rounded-full bg-slate-700">
+		<div
+			class={`metric-bar absolute left-0 top-0 h-full rounded-full ${bgColor}`}
+			style={`--target-width: ${percentage}%`}
+		></div>
+	</div>
+
+	{description && (
+		<p class="mt-3 text-sm text-slate-500">{description}</p>
+	)}
+</div>
+
+<style>
+	.metric-bar {
+		width: 0;
+		animation: fillBar 1.5s ease-out forwards;
+		animation-delay: 0.3s;
+	}
+
+	@keyframes fillBar {
+		from {
+			width: 0;
+		}
+		to {
+			width: var(--target-width);
+		}
+	}
+
+	.metric-card {
+		animation: fadeIn 0.5s ease-out forwards;
+		opacity: 0;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

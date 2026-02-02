@@ -1,0 +1,33 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import GalleryGrid from '../../../components/transitions/GalleryGrid.astro';
+import { galleryItems } from '../../../data/gallery';
+
+// Use smaller images for thumbnails in the grid
+const gridItems = galleryItems.map((item) => ({
+	...item,
+	image: item.image.replace('w=1200&h=800', 'w=600&h=400'),
+}));
+---
+
+<Layout title="Gallery | View Transitions" description="Interactive gallery demonstrating Astro view transitions">
+	<div class="mb-8">
+		<a href="/transitions" class="mb-4 inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300">
+			← Back to View Transitions
+		</a>
+		<h1 class="mb-4 text-3xl font-bold text-white">Photo Gallery</h1>
+		<p class="text-slate-300">
+			Click any image to see the view transition in action. The image, title, and category
+			badge will smoothly animate to their new positions.
+		</p>
+	</div>
+
+	<GalleryGrid items={gridItems} />
+
+	<div class="mt-8 rounded-lg border border-purple-500/30 bg-purple-500/10 p-4">
+		<p class="text-sm text-purple-200">
+			<strong>Tip:</strong> After viewing a detail page, use your browser's back button.
+			The transition works in reverse too!
+		</p>
+	</div>
+</Layout>
