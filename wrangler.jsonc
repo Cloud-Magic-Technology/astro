@@ -1,16 +1,23 @@
 {
-	"main": "@astrojs/cloudflare/entrypoints/server",
-	"name": "astro-exploration",
-  "compatibility_date": "2026-02-02",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "name": "astro-lab",
+  "compatibility_date": "2026-06-02",
   "compatibility_flags": [
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./dist"
-	},
-	"observability": {
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
     "enabled": true
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SHOWCASE_KV",
+      "id": "c36ff3ab81bc4d84b984e802723c9661",
+      "preview_id": "19513d4fd6dd47f2825d0442f5f10c8c"
+    }
+  ]
 }
