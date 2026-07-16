@@ -2,138 +2,157 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
+import v5 from '../../benchmarks/v5-baseline.json';
+import v7 from '../../benchmarks/v7-baseline.json';
+
 const posts = await getCollection('blog');
 const recentPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
 
-const showcasePages = [
-	{ href: '/evolution', title: 'Evolution', desc: 'Journey through web development eras', icon: '🕰️', color: 'from-purple-500 to-cyan-500' },
-	{ href: '/playground', title: 'Playground', desc: 'Interactive hydration demos', icon: '🎮', color: 'from-amber-500 to-orange-500' },
-	{ href: '/state-sharing', title: 'State Sharing', desc: 'React + Vue + Svelte together', icon: '🔗', color: 'from-blue-500 to-green-500' },
-	{ href: '/transitions', title: 'Transitions', desc: 'View Transitions API showcase', icon: '✨', color: 'from-purple-500 to-pink-500' },
-	{ href: '/server-islands', title: 'Server Islands', desc: 'Dynamic + static mixing', icon: '🏝️', color: 'from-cyan-500 to-blue-500' },
-	{ href: '/api-demo', title: 'API Demo', desc: 'Server endpoints in action', icon: '🔌', color: 'from-green-500 to-emerald-500' },
-	{ href: '/content-power', title: 'Content Power', desc: 'MDX & Collections', icon: '📝', color: 'from-pink-500 to-rose-500' },
-	{ href: '/performance', title: 'Performance', desc: 'Metrics that matter', icon: '🚀', color: 'from-green-500 to-cyan-500' },
+const buildImprovement = ((1 - v7.builds.median_ms / v5.builds.median_ms) * 100).toFixed(0);
+
+const v7Features = [
+	{ href: '/v7/advanced-routing', title: 'Advanced Routing', desc: 'src/fetch.ts pipeline composition' },
+	{ href: '/v7/route-caching', title: 'Route Caching', desc: 'CDN cache with Cloudflare provider' },
+	{ href: '/v7/rust-pipeline', title: 'Rust Pipeline', desc: 'Compiler & Sätteri benchmarks' },
+	{ href: '/v7/agent-dev', title: 'Agent Dev', desc: 'AI-native dev server' },
+];
+
+const v6Features = [
+	{ href: '/v6/live-content', title: 'Live Content', desc: 'Request-time collections' },
+	{ href: '/v6/platform-parity', title: 'Platform Parity', desc: 'Cloudflare dev/prod unity' },
+];
+
+const coreDemos = [
+	{ href: '/playground', title: 'Playground', desc: 'Hydration strategies' },
+	{ href: '/state-sharing', title: 'State Sharing', desc: 'Cross-framework cart' },
+	{ href: '/transitions', title: 'Transitions', desc: 'View Transitions API' },
+	{ href: '/server-islands', title: 'Server Islands', desc: 'Static + dynamic mixing' },
+	{ href: '/api-demo', title: 'API Demo', desc: 'Server endpoints' },
+	{ href: '/content-power', title: 'Content Power', desc: 'MDX & Collections' },
 ];
 ---
 
-<Layout title="Astro Lab | Power & Evolution Showcase">
-	<section class="mb-16 text-center">
-		<h1 class="mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-400 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
-			Astro Lab
-		</h1>
-		<p class="mx-auto mb-8 max-w-2xl text-xl text-slate-300">
-			An immersive showcase demonstrating Astro's revolutionary approach to web development.
-			Experience the power of Islands Architecture, multi-framework support, and zero-JS-by-default.
-		</p>
-		<div class="flex flex-wrap justify-center gap-4">
-			<a href="/evolution" class="rounded-lg bg-purple-600 px-6 py-3 font-medium text-white transition-colors hover:bg-purple-700">
-				Start the Journey
-			</a>
-			<a href="/playground" class="rounded-lg border border-purple-500 px-6 py-3 font-medium text-purple-400 transition-colors hover:bg-purple-500/20">
-				Try the Playground
-			</a>
-		</div>
-	</section>
+<Layout title="Astro Lab | Power & Evolution Showcase" description="One codebase, three major versions, every feature proven live.">
+	<div class="space-y-16">
+		<!-- Hero -->
+		<header class="text-center py-8">
+			<h1 class="text-5xl font-bold text-white mb-4 md:text-6xl">
+				<span class="bg-gradient-to-r from-purple-400 via-blue-400 to-green-400 bg-clip-text text-transparent">Astro Lab</span>
+			</h1>
+			<p class="text-xl text-slate-300 max-w-2xl mx-auto mb-2">
+				One codebase. Three major versions. Every feature, proven live.
+			</p>
+			<p class="text-sm text-slate-500">
+				v5 → v6 → v7 &middot; React + Vue + Svelte &middot; Cloudflare Workers
+			</p>
+		</header>
 
-	<section class="mb-16">
-		<h2 class="mb-8 text-center text-2xl font-bold text-white">Explore the Showcase</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-			{showcasePages.map((page) => (
-				<a
-					href={page.href}
-					class="group relative overflow-hidden rounded-xl border border-slate-700 bg-slate-800 p-5 transition-all hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10"
-				>
-					<div class={`absolute inset-0 bg-gradient-to-br ${page.color} opacity-0 transition-opacity group-hover:opacity-10`}></div>
-					<span class="mb-3 block text-3xl">{page.icon}</span>
-					<h3 class="mb-1 font-bold text-white group-hover:text-purple-400 transition-colors">
-						{page.title}
-					</h3>
-					<p class="text-sm text-slate-400">{page.desc}</p>
-				</a>
-			))}
-		</div>
-	</section>
+		<!-- Three Acts -->
+		<section class="grid gap-6 md:grid-cols-3">
+			<!-- Act I: Evolution -->
+			<a href="/evolution" class="group rounded-xl border border-slate-700 bg-slate-800/50 p-6 transition-all hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10">
+				<span class="text-xs font-semibold text-blue-400 uppercase tracking-wider">Act I</span>
+				<h2 class="text-2xl font-bold text-white mt-2 mb-3 group-hover:text-blue-400 transition-colors">The Evolution</h2>
+				<p class="text-slate-400 text-sm mb-4">
+					How Astro grew from Islands Architecture to a Rust-powered, AI-native framework across three major versions.
+				</p>
+				<span class="text-sm font-medium text-blue-400">See the timeline &rarr;</span>
+			</a>
 
-	<section class="mb-16">
-		<div class="rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-800/50 p-8">
-			<h2 class="mb-6 text-2xl font-bold text-white">Tech Stack</h2>
-			<div class="grid gap-6 md:grid-cols-3">
-				<div class="flex items-start gap-4">
-					<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/20 text-2xl">
-						<span class="text-blue-400">R</span>
-					</div>
-					<div>
-						<h3 class="font-bold text-blue-400">React 19</h3>
-						<p class="text-sm text-slate-400">Component library with hooks, Server Components, and JSX</p>
-					</div>
-				</div>
-				<div class="flex items-start gap-4">
-					<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-500/20 text-2xl">
-						<span class="text-green-400">V</span>
-					</div>
-					<div>
-						<h3 class="font-bold text-green-400">Vue 3</h3>
-						<p class="text-sm text-slate-400">Progressive framework with Composition API and SFCs</p>
-					</div>
-				</div>
-				<div class="flex items-start gap-4">
-					<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500/20 text-2xl">
-						<span class="text-orange-400">S</span>
-					</div>
-					<div>
-						<h3 class="font-bold text-orange-400">Svelte 5</h3>
-						<p class="text-sm text-slate-400">Compiler-based framework with Runes reactivity</p>
-					</div>
+			<!-- Act II: Features -->
+			<div class="rounded-xl border border-slate-700 bg-slate-800/50 p-6">
+				<span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Act II</span>
+				<h2 class="text-2xl font-bold text-white mt-2 mb-3">The Features</h2>
+				<p class="text-slate-400 text-sm mb-4">
+					Live demos proving every major capability — from composable routing to AI-native dev servers.
+				</p>
+				<div class="space-y-1">
+					{v7Features.slice(0, 3).map((f) => (
+						<a href={f.href} class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-slate-700">
+							<span class="text-slate-300">{f.title}</span>
+							<span class="text-xs text-purple-400">v7</span>
+						</a>
+					))}
+					<a href="/v6/live-content" class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-slate-700">
+						<span class="text-slate-300">Live Content</span>
+						<span class="text-xs text-green-400">v6</span>
+					</a>
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<section class="mb-16">
-		<h2 class="mb-6 text-2xl font-bold text-white">Features Demonstrated</h2>
-		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-			{[
-				'Islands Architecture',
-				'Partial Hydration',
-				'View Transitions',
-				'Content Collections',
-				'MDX Integration',
-				'Server Endpoints',
-				'Multi-Framework State',
-				'Zero JS Default',
-				'Server Islands',
-				'Type-Safe Content',
-				'Edge Deployment',
-				'Tailwind CSS v4',
-			].map((feature) => (
-				<div class="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-3">
-					<span class="text-green-400">✓</span>
-					<span class="text-slate-300">{feature}</span>
+			<!-- Act III: Performance -->
+			<a href="/performance" class="group rounded-xl border border-slate-700 bg-slate-800/50 p-6 transition-all hover:border-green-500/50 hover:shadow-lg hover:shadow-green-500/10">
+				<span class="text-xs font-semibold text-green-400 uppercase tracking-wider">Act III</span>
+				<h2 class="text-2xl font-bold text-white mt-2 mb-3 group-hover:text-green-400 transition-colors">The Results</h2>
+				<p class="text-slate-400 text-sm mb-4">
+					Real benchmarks from this repo. {buildImprovement}% faster builds, measured and verified.
+				</p>
+				<div class="flex items-baseline gap-2 mb-2">
+					<span class="text-3xl font-bold text-green-400">{buildImprovement}%</span>
+					<span class="text-sm text-slate-500">faster builds</span>
 				</div>
-			))}
-		</div>
-	</section>
+				<span class="text-sm font-medium text-green-400">See all metrics &rarr;</span>
+			</a>
+		</section>
 
-	{recentPosts.length > 0 && (
+		<!-- Feature Grid -->
 		<section>
-			<div class="mb-6 flex items-center justify-between">
-				<h2 class="text-2xl font-bold text-white">Recent Posts</h2>
-				<a href="/blog" class="text-purple-400 hover:text-purple-300 transition-colors">View all →</a>
-			</div>
-			<div class="grid gap-4 md:grid-cols-3">
-				{recentPosts.map((post) => (
-					<a href={`/blog/${post.id}`} class="block rounded-xl border border-slate-700 bg-slate-800 p-5 transition-all hover:border-purple-500">
-						<h3 class="mb-2 font-bold text-white">{post.data.title}</h3>
-						<p class="mb-3 text-sm text-slate-400 line-clamp-2">{post.data.description}</p>
-						<div class="flex flex-wrap gap-2">
-							{post.data.tags.slice(0, 3).map((tag) => (
-								<span class="rounded bg-slate-700 px-2 py-1 text-xs text-slate-300">{tag}</span>
-							))}
+			<h2 class="text-lg font-bold text-white mb-4 text-center">All Demo Pages</h2>
+			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				{v7Features.map((f) => (
+					<a href={f.href} class="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-800/50 p-3 transition-colors hover:border-purple-500/50">
+						<span class="rounded bg-purple-500/20 px-2 py-0.5 text-xs font-semibold text-purple-400">v7</span>
+						<div>
+							<span class="text-sm font-medium text-white">{f.title}</span>
+							<span class="block text-xs text-slate-500">{f.desc}</span>
+						</div>
+					</a>
+				))}
+				{v6Features.map((f) => (
+					<a href={f.href} class="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-800/50 p-3 transition-colors hover:border-green-500/50">
+						<span class="rounded bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-400">v6</span>
+						<div>
+							<span class="text-sm font-medium text-white">{f.title}</span>
+							<span class="block text-xs text-slate-500">{f.desc}</span>
+						</div>
+					</a>
+				))}
+				{coreDemos.map((f) => (
+					<a href={f.href} class="flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-800/50 p-3 transition-colors hover:border-blue-500/50">
+						<span class="rounded bg-blue-500/20 px-2 py-0.5 text-xs font-semibold text-blue-400">v5</span>
+						<div>
+							<span class="text-sm font-medium text-white">{f.title}</span>
+							<span class="block text-xs text-slate-500">{f.desc}</span>
 						</div>
 					</a>
 				))}
 			</div>
 		</section>
-	)}
+
+		<!-- Recent Posts -->
+		{recentPosts.length > 0 && (
+			<section>
+				<div class="flex items-center justify-between mb-4">
+					<h2 class="text-lg font-bold text-white">Recent Posts</h2>
+					<a href="/blog" class="text-sm text-purple-400 hover:underline">View all &rarr;</a>
+				</div>
+				<div class="grid gap-4 md:grid-cols-3">
+					{recentPosts.map((post) => (
+						<a href={`/blog/${post.id}`} class="rounded-xl border border-slate-700 bg-slate-800/50 p-4 transition-colors hover:border-purple-500/50">
+							<h3 class="font-medium text-white mb-1">{post.data.title}</h3>
+							<p class="text-sm text-slate-400 line-clamp-2 mb-2">{post.data.description}</p>
+							<div class="flex items-center gap-2">
+								<time class="text-xs text-slate-500">
+									{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+								</time>
+								{post.data.tags.slice(0, 2).map((tag) => (
+									<span class="rounded bg-slate-700 px-1.5 py-0.5 text-xs text-slate-400">{tag}</span>
+								))}
+							</div>
+						</a>
+					))}
+				</div>
+			</section>
+		)}
+	</div>
 </Layout>

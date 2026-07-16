@@ -1,200 +1,187 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import MetricCard from '../components/performance/MetricCard.astro';
 import ComparisonChart from '../components/performance/ComparisonChart.svelte';
-import WebVitalsExplainer from '../components/performance/WebVitalsExplainer.astro';
-import InfoBox from '../components/shared/InfoBox.astro';
+import AnimatedNumber from '../components/shared/AnimatedNumber.svelte';
+
+import v5 from '../../benchmarks/v5-baseline.json';
+import v7 from '../../benchmarks/v7-baseline.json';
+
+const buildImprovement = ((1 - v7.builds.median_ms / v5.builds.median_ms) * 100).toFixed(1);
+const distImprovement = ((1 - v7.output.dist_size_bytes / v5.output.dist_size_bytes) * 100).toFixed(1);
+const jsImprovement = ((1 - v7.output.client_js_bytes / v5.output.client_js_bytes) * 100).toFixed(1);
 ---
 
-<Layout title="Performance | Astro Lab" description="Proof that Astro delivers on its performance promises">
-	<div class="mb-12">
-		<h1 class="mb-4 bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
-			Performance Metrics
-		</h1>
-		<p class="text-lg text-slate-300">
-			The numbers don't lie. See how Astro's architecture translates
-			to real-world performance gains.
-		</p>
-	</div>
-
-	<section class="mb-12">
-		<InfoBox type="success" title="Why Astro is Fast">
-			Astro ships zero JavaScript by default. Components render to static HTML at build time,
-			and only interactive islands load the JS they need. This architectural decision means
-			your pages are fast before you even start optimizing.
-		</InfoBox>
-	</section>
-
-	<section class="mb-12">
-		<h2 class="mb-6 text-2xl font-bold text-white">This Site's Scores</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-			<MetricCard
-				label="Performance"
-				value={98}
-				color="green"
-				description="Overall Lighthouse performance score"
-			/>
-			<MetricCard
-				label="Accessibility"
-				value={100}
-				color="blue"
-				description="Semantic HTML and ARIA support"
-			/>
-			<MetricCard
-				label="Best Practices"
-				value={100}
-				color="purple"
-				description="Modern web standards compliance"
-			/>
-			<MetricCard
-				label="SEO"
-				value={100}
-				color="green"
-				description="Search engine optimization"
-			/>
-		</div>
-	</section>
-
-	<section class="mb-12">
-		<h2 class="mb-6 text-2xl font-bold text-white">Loading Performance</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			<MetricCard
-				label="First Contentful Paint"
-				value={0.6}
-				maxValue={3}
-				suffix="s"
-				color="green"
-				description="When first content appears"
-			/>
-			<MetricCard
-				label="Largest Contentful Paint"
-				value={0.9}
-				maxValue={4}
-				suffix="s"
-				color="green"
-				description="When main content is visible"
-			/>
-			<MetricCard
-				label="Time to Interactive"
-				value={0.8}
-				maxValue={5}
-				suffix="s"
-				color="green"
-				description="When page becomes interactive"
-			/>
-			<MetricCard
-				label="Total Blocking Time"
-				value={10}
-				maxValue={600}
-				suffix="ms"
-				color="green"
-				description="Main thread blocking time"
-			/>
-			<MetricCard
-				label="Cumulative Layout Shift"
-				value={0}
-				maxValue={0.25}
-				color="green"
-				description="Visual stability score"
-			/>
-			<MetricCard
-				label="Speed Index"
-				value={1.1}
-				maxValue={5}
-				suffix="s"
-				color="green"
-				description="How quickly content is visible"
-			/>
-		</div>
-	</section>
-
-	<section class="mb-12">
-		<h2 class="mb-6 text-2xl font-bold text-white">Framework Comparison</h2>
-		<ComparisonChart client:visible />
-	</section>
-
-	<section class="mb-12">
-		<WebVitalsExplainer />
-	</section>
-
-	<section class="mb-12">
-		<h2 class="mb-6 text-2xl font-bold text-white">How Astro Achieves This</h2>
-
-		<div class="grid gap-4 md:grid-cols-2">
-			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-				<div class="mb-3 flex items-center gap-3">
-					<span class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-xl">
-						🏝️
-					</span>
-					<h3 class="font-bold text-white">Islands Architecture</h3>
-				</div>
-				<p class="text-sm text-slate-300">
-					Only interactive components ship JavaScript. A blog post with one
-					interactive widget ships only that widget's JS, not the entire page.
-				</p>
-			</div>
-
-			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-				<div class="mb-3 flex items-center gap-3">
-					<span class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20 text-xl">
-						📦
-					</span>
-					<h3 class="font-bold text-white">Zero JS Default</h3>
-				</div>
-				<p class="text-sm text-slate-300">
-					Every component renders to HTML at build time. You explicitly opt-in
-					to client-side JavaScript when you need interactivity.
-				</p>
-			</div>
-
-			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-				<div class="mb-3 flex items-center gap-3">
-					<span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20 text-xl">
-						⏰
-					</span>
-					<h3 class="font-bold text-white">Smart Hydration</h3>
-				</div>
-				<p class="text-sm text-slate-300">
-					Control exactly when components hydrate: immediately, when idle,
-					when visible, or based on media queries. Load JS only when needed.
-				</p>
-			</div>
-
-			<div class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-				<div class="mb-3 flex items-center gap-3">
-					<span class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/20 text-xl">
-						🔧
-					</span>
-					<h3 class="font-bold text-white">Optimized Build</h3>
-				</div>
-				<p class="text-sm text-slate-300">
-					Vite-powered builds with automatic code splitting, tree shaking,
-					and asset optimization. Production bundles are minimal by design.
-				</p>
-			</div>
-		</div>
-	</section>
-
-	<section>
-		<div class="rounded-xl border border-green-500/30 bg-gradient-to-br from-green-500/10 to-cyan-500/10 p-6">
-			<h2 class="mb-4 text-xl font-bold text-white">The Bottom Line</h2>
-			<div class="grid gap-6 md:grid-cols-3">
-				<div class="text-center">
-					<p class="text-4xl font-bold text-green-400">90%</p>
-					<p class="text-sm text-slate-400">Less JavaScript shipped</p>
-				</div>
-				<div class="text-center">
-					<p class="text-4xl font-bold text-cyan-400">3x</p>
-					<p class="text-sm text-slate-400">Faster page loads</p>
-				</div>
-				<div class="text-center">
-					<p class="text-4xl font-bold text-purple-400">100</p>
-					<p class="text-sm text-slate-400">Lighthouse scores achievable</p>
-				</div>
-			</div>
-			<p class="mt-4 text-center text-sm text-slate-400">
-				Performance isn't something you optimize for later—it's built into Astro's DNA.
+<Layout title="Performance | Astro Lab" description="Real benchmarks proving Astro's performance gains from v5 to v7">
+	<div class="space-y-10">
+		<header class="text-center mb-8">
+			<h1 class="text-4xl font-bold text-white mb-3">Performance</h1>
+			<p class="text-lg text-slate-400 max-w-2xl mx-auto">
+				Real numbers from this repo. Not marketing claims — measured build metrics
+				from the same codebase across Astro versions.
 			</p>
-		</div>
-	</section>
+		</header>
+
+		<!-- Hero metrics -->
+		<section class="grid gap-4 md:grid-cols-3">
+			<div class="rounded-xl border border-green-500/30 bg-gradient-to-br from-green-500/10 to-green-500/5 p-6 text-center">
+				<p class="text-sm text-green-400 mb-2">Build Time Faster</p>
+				<p class="text-5xl font-bold text-green-400">
+					<AnimatedNumber client:visible value={parseFloat(buildImprovement)} decimals={1} suffix="%" />
+				</p>
+				<p class="text-xs text-slate-500 mt-2">
+					{(v5.builds.median_ms / 1000).toFixed(1)}s → {(v7.builds.median_ms / 1000).toFixed(1)}s
+				</p>
+			</div>
+			<div class="rounded-xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-blue-500/5 p-6 text-center">
+				<p class="text-sm text-blue-400 mb-2">Output Smaller</p>
+				<p class="text-5xl font-bold text-blue-400">
+					<AnimatedNumber client:visible value={parseFloat(distImprovement)} decimals={1} suffix="%" />
+				</p>
+				<p class="text-xs text-slate-500 mt-2">
+					{(v5.output.dist_size_bytes / 1024).toFixed(0)} KB → {(v7.output.dist_size_bytes / 1024).toFixed(0)} KB
+				</p>
+			</div>
+			<div class="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-purple-500/5 p-6 text-center">
+				<p class="text-sm text-purple-400 mb-2">Client JS Reduced</p>
+				<p class="text-5xl font-bold text-purple-400">
+					<AnimatedNumber client:visible value={parseFloat(jsImprovement)} decimals={1} suffix="%" />
+				</p>
+				<p class="text-xs text-slate-500 mt-2">
+					{(v5.output.client_js_bytes / 1024).toFixed(0)} KB → {(v7.output.client_js_bytes / 1024).toFixed(0)} KB
+				</p>
+			</div>
+		</section>
+
+		<!-- Detailed comparison table -->
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-4">Build Metrics: v5 vs v7</h2>
+			<p class="text-sm text-slate-400 mb-4">
+				Median of 3 runs on Node {v7.node}, same machine, measured {v7.measured}.
+			</p>
+			<div class="overflow-x-auto">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-slate-700">
+							<th class="py-3 text-left text-slate-400">Metric</th>
+							<th class="py-3 text-right text-slate-400">v5 ({v5.version})</th>
+							<th class="py-3 text-right text-purple-400">v7 ({v7.version})</th>
+							<th class="py-3 text-right text-green-400">Change</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-3 text-white font-medium">Build time (median)</td>
+							<td class="py-3 text-right font-mono text-slate-300">{(v5.builds.median_ms / 1000).toFixed(1)}s</td>
+							<td class="py-3 text-right font-mono text-purple-300">{(v7.builds.median_ms / 1000).toFixed(1)}s</td>
+							<td class="py-3 text-right font-mono text-green-400">-{buildImprovement}%</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-3 text-white font-medium">dist/ total size</td>
+							<td class="py-3 text-right font-mono text-slate-300">{(v5.output.dist_size_bytes / 1024).toFixed(0)} KB</td>
+							<td class="py-3 text-right font-mono text-purple-300">{(v7.output.dist_size_bytes / 1024).toFixed(0)} KB</td>
+							<td class="py-3 text-right font-mono text-green-400">-{distImprovement}%</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-3 text-white font-medium">Client JavaScript</td>
+							<td class="py-3 text-right font-mono text-slate-300">{(v5.output.client_js_bytes / 1024).toFixed(1)} KB</td>
+							<td class="py-3 text-right font-mono text-purple-300">{(v7.output.client_js_bytes / 1024).toFixed(1)} KB</td>
+							<td class="py-3 text-right font-mono text-green-400">-{jsImprovement}%</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-3 text-white font-medium">Client CSS</td>
+							<td class="py-3 text-right font-mono text-slate-300">{(v5.output.client_css_bytes / 1024).toFixed(1)} KB</td>
+							<td class="py-3 text-right font-mono text-purple-300">{(v7.output.client_css_bytes / 1024).toFixed(1)} KB</td>
+							<td class="py-3 text-right font-mono text-slate-400">+{((v7.output.client_css_bytes / v5.output.client_css_bytes - 1) * 100).toFixed(1)}%</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-3 text-white font-medium">HTML pages</td>
+							<td class="py-3 text-right font-mono text-slate-300">{v5.output.html_pages}</td>
+							<td class="py-3 text-right font-mono text-purple-300">{v7.output.html_pages}</td>
+							<td class="py-3 text-right font-mono text-slate-400">+{v7.output.html_pages - v5.output.html_pages}</td>
+						</tr>
+						<tr>
+							<td class="py-3 text-white font-medium">Dependencies (total tree)</td>
+							<td class="py-3 text-right font-mono text-slate-300">{v5.dependencies.total_count.toLocaleString()}</td>
+							<td class="py-3 text-right font-mono text-purple-300">{v7.dependencies.total_count.toLocaleString()}</td>
+							<td class="py-3 text-right font-mono text-slate-400">+{v7.dependencies.total_count - v5.dependencies.total_count}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<!-- Individual build runs -->
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-4">Individual Build Runs</h2>
+			<div class="grid gap-6 md:grid-cols-2">
+				<div>
+					<h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">v5 ({v5.version})</h3>
+					<div class="space-y-2">
+						{[v5.builds.run1_ms, v5.builds.run2_ms, v5.builds.run3_ms].map((ms, i) => (
+							<div class="flex items-center gap-3">
+								<span class="text-xs text-slate-500 w-10">Run {i + 1}</span>
+								<div class="flex-1 h-6 bg-slate-700 rounded overflow-hidden">
+									<div
+										class="h-full bg-blue-500/60 rounded"
+										style={`width: ${(ms / Math.max(v5.builds.run1_ms, v5.builds.run2_ms, v5.builds.run3_ms)) * 100}%`}
+									></div>
+								</div>
+								<span class="text-sm font-mono text-slate-300 w-16 text-right">{(ms / 1000).toFixed(1)}s</span>
+							</div>
+						))}
+					</div>
+				</div>
+				<div>
+					<h3 class="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-3">v7 ({v7.version})</h3>
+					<div class="space-y-2">
+						{[v7.builds.run1_ms, v7.builds.run2_ms, v7.builds.run3_ms].map((ms, i) => (
+							<div class="flex items-center gap-3">
+								<span class="text-xs text-slate-500 w-10">Run {i + 1}</span>
+								<div class="flex-1 h-6 bg-slate-700 rounded overflow-hidden">
+									<div
+										class="h-full bg-purple-500/60 rounded"
+										style={`width: ${(ms / Math.max(v5.builds.run1_ms, v5.builds.run2_ms, v5.builds.run3_ms)) * 100}%`}
+									></div>
+								</div>
+								<span class="text-sm font-mono text-purple-300 w-16 text-right">{(ms / 1000).toFixed(1)}s</span>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Framework comparison (existing component) -->
+		<section>
+			<h2 class="text-xl font-bold text-white mb-4">Framework Comparison</h2>
+			<ComparisonChart client:visible />
+		</section>
+
+		<!-- Methodology -->
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-3">Methodology</h2>
+			<ul class="space-y-2 text-sm text-slate-400">
+				<li class="flex items-start gap-2">
+					<span class="text-purple-400 mt-0.5">*</span>
+					All benchmarks run on the same machine, same Node.js version ({v7.node}), same codebase
+				</li>
+				<li class="flex items-start gap-2">
+					<span class="text-purple-400 mt-0.5">*</span>
+					Build time is median of 3 consecutive runs with <code class="font-mono">rm -rf dist/</code> between each
+				</li>
+				<li class="flex items-start gap-2">
+					<span class="text-purple-400 mt-0.5">*</span>
+					The v5 baseline was captured from git commit <code class="font-mono">98cc411</code> (pre-upgrade)
+				</li>
+				<li class="flex items-start gap-2">
+					<span class="text-purple-400 mt-0.5">*</span>
+					The dist/ size reduction is largely due to the Cloudflare adapter v14 restructuring worker output
+				</li>
+				<li class="flex items-start gap-2">
+					<span class="text-purple-400 mt-0.5">*</span>
+					Framework comparison uses representative values for typical content sites — see the <a href="/v7/rust-pipeline" class="text-purple-400 hover:underline">Rust Pipeline</a> page for official Astro benchmarks
+				</li>
+			</ul>
+		</section>
+	</div>
 </Layout>

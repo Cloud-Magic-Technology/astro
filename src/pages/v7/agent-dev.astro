@@ -1,0 +1,155 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/shared/CodeBlock.astro';
+---
+
+<Layout title="Agent Dev Server | Astro Lab" description="Astro 7 agent-friendly dev server with background mode and JSON logs">
+	<div class="space-y-8">
+		<header class="text-center">
+			<span class="inline-block rounded-full bg-purple-500/20 px-3 py-1 text-sm font-medium text-purple-400 mb-4">Astro 7</span>
+			<h1 class="text-4xl font-bold text-white mb-3">Agent Dev Server</h1>
+			<p class="text-lg text-slate-400 max-w-2xl mx-auto">
+				Astro 7 is the first framework with first-class AI agent support.
+				Background dev server, structured JSON logs, health endpoints, and automatic agent detection.
+			</p>
+		</header>
+
+		<section class="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-6">
+			<h2 class="text-xl font-bold text-white mb-3">Astro &times; Claude Code</h2>
+			<p class="text-slate-300">
+				This entire site was built and migrated using Claude Code as the primary development agent.
+				Astro 7's agent dev server features made this workflow seamless — background mode means
+				the dev server runs without blocking the terminal, JSON logs are parseable by AI agents,
+				and the health endpoint lets agents verify the server state programmatically.
+			</p>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Background Mode</h2>
+			<p class="text-slate-400">
+				Start the dev server in the background — it returns control to your terminal (or AI agent) immediately:
+			</p>
+			<CodeBlock title="Terminal" lang="bash">
+{`# Start in background
+astro dev --background
+
+# Check status
+astro dev status
+
+# View logs
+astro dev logs --follow
+
+# Stop the server
+astro dev stop`}
+			</CodeBlock>
+			<p class="text-sm text-slate-400">
+				The background process persists across terminal sessions. PID and port are tracked
+				automatically — no manual process management needed.
+			</p>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Health Endpoint</h2>
+			<p class="text-slate-400">
+				The dev server exposes <code class="font-mono text-purple-400">/_astro/status</code>
+				for programmatic health checks:
+			</p>
+			<CodeBlock title="GET /_astro/status" lang="json">
+{`{
+  "status": "ready",
+  "version": "7.0.9",
+  "port": 4321,
+  "uptime": 142.5,
+  "routes": 22,
+  "errors": 0
+}`}
+			</CodeBlock>
+			<p class="text-sm text-slate-400">
+				AI agents can poll this endpoint to know when the server is ready before
+				running tests or making requests. No more <code class="font-mono">sleep 5</code>
+				and hoping for the best.
+			</p>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Agent Detection</h2>
+			<p class="text-slate-400">
+				Astro automatically detects when it's being run by an AI coding agent and
+				adjusts its output format:
+			</p>
+			<CodeBlock title="How detection works" lang="text">
+{`# Astro checks for the presence of AI agent indicators:
+# - Environment variables set by Claude Code, Cursor, Windsurf, etc.
+# - The "am-i-vibing" signal (a community convention)
+# - Terminal capabilities that suggest non-human operation
+
+# When an agent is detected:
+# - Output switches to structured JSON (parseable logs)
+# - Interactive prompts are auto-answered with safe defaults
+# - Error messages include file paths and line numbers for programmatic fixing`}
+			</CodeBlock>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">JSON Structured Logs</h2>
+			<p class="text-slate-400">
+				When running in agent mode or with <code class="font-mono text-purple-400">--json</code>,
+				all log output is structured JSON — one object per line:
+			</p>
+			<CodeBlock title="JSON log output" lang="json">
+{`{"level":"info","msg":"Server started","port":4321,"timestamp":"2026-07-15T12:00:00Z"}
+{"level":"info","msg":"GET /","status":200,"duration_ms":12,"timestamp":"2026-07-15T12:00:01Z"}
+{"level":"warn","msg":"Deprecation","file":"src/pages/old.astro","line":5,"timestamp":"2026-07-15T12:00:02Z"}
+{"level":"error","msg":"Build error","file":"src/pages/broken.astro","line":12,"col":8,"timestamp":"2026-07-15T12:00:03Z"}`}
+			</CodeBlock>
+			<p class="text-sm text-slate-400">
+				AI agents can parse these logs line-by-line, detect errors, and fix them
+				without needing to parse ANSI escape codes or human-readable formatting.
+			</p>
+		</section>
+
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-4">Agent Workflow Example</h2>
+			<p class="text-slate-400 mb-4">
+				A typical Claude Code workflow with Astro 7:
+			</p>
+			<div class="space-y-3">
+				<div class="flex gap-3">
+					<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-sm font-bold text-purple-400">1</span>
+					<div>
+						<p class="font-medium text-white">Start dev server</p>
+						<p class="text-sm text-slate-400"><code class="font-mono">astro dev --background</code> — returns immediately, agent continues working</p>
+					</div>
+				</div>
+				<div class="flex gap-3">
+					<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-sm font-bold text-purple-400">2</span>
+					<div>
+						<p class="font-medium text-white">Wait for ready</p>
+						<p class="text-sm text-slate-400">Poll <code class="font-mono">/_astro/status</code> until <code class="font-mono">"status": "ready"</code></p>
+					</div>
+				</div>
+				<div class="flex gap-3">
+					<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-sm font-bold text-purple-400">3</span>
+					<div>
+						<p class="font-medium text-white">Make changes</p>
+						<p class="text-sm text-slate-400">Edit files — HMR updates automatically, JSON logs report any errors</p>
+					</div>
+				</div>
+				<div class="flex gap-3">
+					<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-sm font-bold text-purple-400">4</span>
+					<div>
+						<p class="font-medium text-white">Verify</p>
+						<p class="text-sm text-slate-400">Fetch pages, check responses, run <code class="font-mono">astro check</code></p>
+					</div>
+				</div>
+				<div class="flex gap-3">
+					<span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-sm font-bold text-purple-400">5</span>
+					<div>
+						<p class="font-medium text-white">Clean up</p>
+						<p class="text-sm text-slate-400"><code class="font-mono">astro dev stop</code> — no orphan processes</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</Layout>

@@ -1,0 +1,154 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/shared/CodeBlock.astro';
+
+const now = new Date().toISOString();
+const requestId = crypto.randomUUID().slice(0, 8);
+
+const configExample = `import { defineConfig } from 'astro/config';
+import { cacheCloudflare } from '@astrojs/cloudflare/cache';
+
+export default defineConfig({
+  cache: {
+    provider: cacheCloudflare(),
+  },
+  routeRules: {
+    '/api/stats': { maxAge: 60, swr: 30 },
+    '/blog/[...path]': { maxAge: 300, swr: 60 },
+    '/products/[...slug]': { maxAge: 3600, tags: ['products'] },
+  },
+});`;
+
+const perRequestExample = `---
+// Per-request cache control
+Astro.cache.set({ maxAge: 120, swr: 60 });
+---
+
+<p>Rendered at {new Date().toISOString()}</p>`;
+---
+
+<Layout title="Route Caching | Astro Lab" description="Route cache directives with Cloudflare CDN provider">
+	<div class="space-y-8">
+		<header class="text-center">
+			<span class="inline-block rounded-full bg-purple-500/20 px-3 py-1 text-sm font-medium text-purple-400 mb-4">Astro 7</span>
+			<h1 class="text-4xl font-bold text-white mb-3">Route Caching</h1>
+			<p class="text-lg text-slate-400 max-w-2xl mx-auto">
+				Astro 7 adds built-in route caching with pluggable CDN providers.
+				This page is server-rendered on every request — watch the timestamps change.
+			</p>
+		</header>
+
+		<section class="rounded-xl border border-green-500/30 bg-green-500/10 p-6">
+			<h2 class="text-xl font-bold text-green-300 mb-4">Live Server Render</h2>
+			<div class="grid gap-4 md:grid-cols-2">
+				<div class="rounded-lg bg-slate-800 p-4">
+					<span class="text-sm text-slate-400">Rendered at</span>
+					<p class="text-lg font-mono text-white">{now}</p>
+				</div>
+				<div class="rounded-lg bg-slate-800 p-4">
+					<span class="text-sm text-slate-400">Request ID</span>
+					<p class="text-lg font-mono text-white">{requestId}</p>
+				</div>
+			</div>
+			<p class="mt-4 text-sm text-slate-400">
+				Refresh this page — the timestamp and request ID will change on each request,
+				proving this is server-rendered (not static). With route caching enabled,
+				the Cloudflare CDN will cache responses and serve them for subsequent requests
+				within the <code class="font-mono text-green-400">maxAge</code> window.
+			</p>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Configuration</h2>
+			<p class="text-slate-400">
+				Route caching is configured in <code class="font-mono text-purple-400">astro.config.mjs</code>
+				with a cache provider and route rules:
+			</p>
+			<CodeBlock title="astro.config.mjs" lang="typescript">
+				{configExample}
+			</CodeBlock>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Per-Request Control</h2>
+			<p class="text-slate-400">
+				Override cache behavior on a per-request basis using <code class="font-mono text-purple-400">Astro.cache.set()</code>:
+			</p>
+			<CodeBlock title="src/pages/my-page.astro" lang="astro">
+				{perRequestExample}
+			</CodeBlock>
+		</section>
+
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-3">Cloudflare CDN Provider</h2>
+			<p class="text-slate-400 mb-4">
+				The <code class="font-mono text-purple-400">cacheCloudflare()</code> provider sets:
+			</p>
+			<div class="space-y-3">
+				<div class="flex items-start gap-3">
+					<span class="mt-1 inline-block h-2 w-2 rounded-full bg-blue-400"></span>
+					<div>
+						<span class="font-medium text-white">Cloudflare-CDN-Cache-Control</span>
+						<p class="text-sm text-slate-400">Controls Cloudflare's edge cache independently of the browser <code class="font-mono">Cache-Control</code> header</p>
+					</div>
+				</div>
+				<div class="flex items-start gap-3">
+					<span class="mt-1 inline-block h-2 w-2 rounded-full bg-blue-400"></span>
+					<div>
+						<span class="font-medium text-white">Cache-Tag</span>
+						<p class="text-sm text-slate-400">Auto-tags responses with the request path for targeted cache purging via the Cloudflare API</p>
+					</div>
+				</div>
+				<div class="flex items-start gap-3">
+					<span class="mt-1 inline-block h-2 w-2 rounded-full bg-blue-400"></span>
+					<div>
+						<span class="font-medium text-white">Stale-While-Revalidate (SWR)</span>
+						<p class="text-sm text-slate-400">Serve stale content while fetching a fresh response in the background</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-3">Route Rules Syntax</h2>
+			<p class="text-slate-400 mb-3">
+				Uses the same <code class="font-mono text-purple-400">[param]</code> and
+				<code class="font-mono text-purple-400">[...rest]</code> syntax as file-based routing:
+			</p>
+			<div class="overflow-x-auto">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-slate-700">
+							<th class="py-2 text-left text-slate-400">Pattern</th>
+							<th class="py-2 text-left text-slate-400">maxAge</th>
+							<th class="py-2 text-left text-slate-400">SWR</th>
+							<th class="py-2 text-left text-slate-400">Tags</th>
+						</tr>
+					</thead>
+					<tbody class="font-mono">
+						<tr class="border-b border-slate-700/50">
+							<td class="py-2 text-purple-400">/api/stats</td>
+							<td class="py-2 text-white">60s</td>
+							<td class="py-2 text-white">30s</td>
+							<td class="py-2 text-slate-500">—</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-2 text-purple-400">/blog/[...path]</td>
+							<td class="py-2 text-white">300s</td>
+							<td class="py-2 text-white">60s</td>
+							<td class="py-2 text-slate-500">—</td>
+						</tr>
+						<tr>
+							<td class="py-2 text-purple-400">/products/[...slug]</td>
+							<td class="py-2 text-white">3600s</td>
+							<td class="py-2 text-slate-500">—</td>
+							<td class="py-2 text-green-400">products</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</div>
+</Layout>
