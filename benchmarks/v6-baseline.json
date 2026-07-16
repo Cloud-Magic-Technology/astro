@@ -1,0 +1,32 @@
+{
+  "version": "6.x",
+  "source": "estimated",
+  "source_note": "Astro 7 blog reports 15-61% faster builds vs v6 (astro.build/blog/astro-7/). Our v5 median was 24612ms, v7 median 17832ms. Astro 6 was an incremental step between v5 and v7 — v6 introduced the experimental Rust compiler but kept the JS markdown pipeline. Estimated v6 build time assumes ~10% improvement over v5 (new dev server, no major build pipeline changes until v7's Rust compiler + Sätteri).",
+  "source_url": "https://astro.build/blog/astro-7/",
+  "builds": {
+    "estimated_median_ms": 22150,
+    "note": "Estimated ~10% faster than v5 (24612ms). Astro 7 blog shows v7 is 15-61% faster than v6 on large sites."
+  },
+  "output": {
+    "dist_size_bytes": null,
+    "html_pages": 21,
+    "client_js_bytes": null,
+    "client_css_bytes": null,
+    "note": "Bundle sizes not measured — no v6 commit exists in this repo's history"
+  },
+  "dependencies": {
+    "total_count": null,
+    "note": "Not measured — no v6 install available"
+  },
+  "astro_blog_benchmarks": {
+    "description": "Official Astro 7 vs 6 build time comparisons from astro.build/blog/astro-7/",
+    "sites": [
+      { "name": "docs.astro.build", "pages": 6313, "v6_seconds": 114.54, "v7_seconds": 73.53, "improvement": "35.8%" },
+      { "name": "astro.build", "pages": 308, "v6_seconds": 62.70, "v7_seconds": 24.24, "improvement": "61.3%" },
+      { "name": "biomejs.dev", "pages": 6488, "v6_seconds": 176.39, "v7_seconds": 149.90, "improvement": "15.0%" },
+      { "name": "developers.cloudflare.com", "pages": 8431, "v6_seconds": 386.89, "v7_seconds": 261.94, "improvement": "32.3%" },
+      { "name": "tauri.app", "pages": 7117, "v6_seconds": 86.12, "v7_seconds": 55.33, "improvement": "35.7%" },
+      { "name": "aspire.dev", "pages": 13275, "v6_seconds": 385.84, "v7_seconds": 326.11, "improvement": "15.5%" }
+    ]
+  }
+}

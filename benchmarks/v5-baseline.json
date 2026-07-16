@@ -1,0 +1,20 @@
+{
+  "version": "5.17.1",
+  "node": "22.22.1",
+  "measured": "2026-07-15",
+  "builds": {
+    "run1_ms": 28971,
+    "run2_ms": 24612,
+    "run3_ms": 21660,
+    "median_ms": 24612
+  },
+  "output": {
+    "dist_size_bytes": 2143248,
+    "html_pages": 21,
+    "client_js_bytes": 339471,
+    "client_css_bytes": 55321
+  },
+  "dependencies": {
+    "total_count": 1377
+  }
+}

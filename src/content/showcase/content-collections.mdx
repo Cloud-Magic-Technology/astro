@@ -29,8 +29,15 @@ Content Collections are Astro's built-in solution for managing groups of related
 
 Collections are defined in `src/content.config.ts`:
 
+<Callout type="tip" title="Astro v6: z moved to astro/zod">
+  In Astro 6, `z` is no longer exported from `astro:content`. Import it separately
+  from `astro/zod`, which now ships **Zod 4** with top-level validators like `z.email()`
+  and `z.url()` instead of `z.string().email()`.
+</Callout>
+
 ```typescript
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';   // v6: z moved out of astro:content
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
