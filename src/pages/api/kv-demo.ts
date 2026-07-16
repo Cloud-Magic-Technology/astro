@@ -4,9 +4,10 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // @ts-ignore cloudflare:workers is resolved by workerd at runtime
     const { env } = await import('cloudflare:workers') as any;
-    const kv = env.SHOWCASE_KV as KVNamespace;
-    const { key, value } = await request.json();
+    const kv = env.SHOWCASE_KV as any;
+    const { key, value } = await request.json() as any;
     if (!key || !value) {
       return Response.json({ error: 'key and value required' }, { status: 400 });
     }
@@ -19,8 +20,9 @@ export const POST: APIRoute = async ({ request }) => {
 
 export const GET: APIRoute = async ({ url }) => {
   try {
+    // @ts-ignore cloudflare:workers is resolved by workerd at runtime
     const { env } = await import('cloudflare:workers') as any;
-    const kv = env.SHOWCASE_KV as KVNamespace;
+    const kv = env.SHOWCASE_KV as any;
     const key = url.searchParams.get('key');
     if (!key) {
       return Response.json({ error: 'key query param required' }, { status: 400 });

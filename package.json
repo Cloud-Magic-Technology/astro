@@ -1,7 +1,7 @@
 {
-  "name": "astro-exploration",
+  "name": "astro-lab",
   "type": "module",
-  "version": "0.0.1",
+  "version": "7.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -25,7 +25,10 @@
     "react-dom": "^19.2.4",
     "svelte": "^5.49.1",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3",
     "vue": "^3.5.27"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
   }
 }

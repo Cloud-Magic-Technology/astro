@@ -1,7 +1,5 @@
 import { defineLiveCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import type { LiveLoader, LiveDataEntry, LiveDataCollection } from 'astro';
-
 interface ReleaseData {
   tag_name: string;
   name: string;
@@ -10,10 +8,15 @@ interface ReleaseData {
   html_url: string;
 }
 
-const githubReleasesLoader: LiveLoader<ReleaseData> = {
+interface LiveDataEntry<T> {
+  id: string;
+  data: T;
+}
+
+const githubReleasesLoader = {
   name: 'github-releases',
 
-  async loadEntry({ filter }) {
+  async loadEntry({ filter }: { filter: { id: string } }) {
     try {
       const res = await fetch(
         `https://api.github.com/repos/withastro/astro/releases/tags/${filter.id}`,
@@ -48,7 +51,7 @@ const githubReleasesLoader: LiveLoader<ReleaseData> = {
         return { error: new Error(`GitHub API returned ${res.status}`) };
       }
       const releases = await res.json() as any[];
-      const entries: LiveDataEntry<ReleaseData>[] = releases.map((r) => ({
+      const entries: LiveDataEntry<ReleaseData>[] = releases.map((r: any) => ({
         id: r.tag_name,
         data: {
           tag_name: r.tag_name,
@@ -67,7 +70,7 @@ const githubReleasesLoader: LiveLoader<ReleaseData> = {
 
 const githubReleases = defineLiveCollection({
   type: 'live',
-  loader: githubReleasesLoader,
+  loader: githubReleasesLoader as any,
   schema: z.object({
     tag_name: z.string(),
     name: z.string(),
