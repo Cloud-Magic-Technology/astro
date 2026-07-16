@@ -1,0 +1,18 @@
+{
+  "version": "7.0.9",
+  "node": "22.22.1",
+  "measured": "2026-07-15",
+  "note": "Post-infrastructure: Fonts API, fetch pipeline, route caching, live collections, KV binding",
+  "builds": {
+    "run1_ms": 23484,
+    "run2_ms": 20773,
+    "run3_ms": 12286,
+    "median_ms": 20773
+  },
+  "output": {
+    "dist_size_bytes": 1010581,
+    "html_pages": 22,
+    "client_js_bytes": 336137,
+    "client_css_bytes": 56223
+  }
+}
