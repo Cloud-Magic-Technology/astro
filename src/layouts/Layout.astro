@@ -43,7 +43,6 @@ const isActive = (href: string) => {
 	return currentPath.startsWith(href);
 };
 
-const renderDropdown = (label: string, items: Array<{href: string; label: string; desc: string}>) => items;
 ---
 
 <!doctype html>
@@ -91,7 +90,7 @@ const renderDropdown = (label: string, items: Array<{href: string; label: string
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="invisible absolute right-0 top-full w-64 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+							<div class="absolute right-0 top-full w-64 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v7Nav.map((item) => (
 										<a
@@ -120,7 +119,7 @@ const renderDropdown = (label: string, items: Array<{href: string; label: string
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="invisible absolute right-0 top-full w-52 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+							<div class="absolute right-0 top-full w-52 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v6Nav.map((item) => (
 										<a
@@ -147,7 +146,7 @@ const renderDropdown = (label: string, items: Array<{href: string; label: string
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="invisible absolute right-0 top-full w-64 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+							<div class="absolute right-0 top-full w-64 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{moreNav.map((item) => (
 										<a
