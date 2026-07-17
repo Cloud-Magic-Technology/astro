@@ -81,7 +81,7 @@ const isActive = (href: string) => {
 						))}
 
 						<!-- v7 Features Dropdown -->
-						<div class="relative">
+						<div class="group relative" data-dropdown-wrap="v7">
 							<button data-dropdown="v7" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
 								currentPath.startsWith('/v7') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
 							}`}>
@@ -90,7 +90,7 @@ const isActive = (href: string) => {
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div id="dropdown-v7" class="absolute right-0 top-full w-64 pt-2 hidden">
+							<div id="dropdown-v7" class="absolute right-0 top-full w-64 pt-2 hidden group-hover:block">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v7Nav.map((item) => (
 										<a
@@ -110,7 +110,7 @@ const isActive = (href: string) => {
 						</div>
 
 						<!-- v6 Features Dropdown -->
-						<div class="relative">
+						<div class="group relative" data-dropdown-wrap="v6">
 							<button data-dropdown="v6" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
 								currentPath.startsWith('/v6') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
 							}`}>
@@ -119,7 +119,7 @@ const isActive = (href: string) => {
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div id="dropdown-v6" class="absolute right-0 top-full w-52 pt-2 hidden">
+							<div id="dropdown-v6" class="absolute right-0 top-full w-52 pt-2 hidden group-hover:block">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v6Nav.map((item) => (
 										<a
@@ -139,14 +139,14 @@ const isActive = (href: string) => {
 						</div>
 
 						<!-- More Demos Dropdown -->
-						<div class="relative">
+						<div class="group relative" data-dropdown-wrap="more">
 							<button data-dropdown="more" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white">
 								More
 								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div id="dropdown-more" class="absolute right-0 top-full w-64 pt-2 hidden">
+							<div id="dropdown-more" class="absolute right-0 top-full w-64 pt-2 hidden group-hover:block">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{moreNav.map((item) => (
 										<a
