@@ -81,16 +81,16 @@ const isActive = (href: string) => {
 						))}
 
 						<!-- v7 Features Dropdown -->
-						<div class="group relative">
-							<button class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+						<div class="relative">
+							<button data-dropdown="v7" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
 								currentPath.startsWith('/v7') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
 							}`}>
 								v7
-								<svg class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="absolute right-0 top-full w-64 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
+							<div id="dropdown-v7" class="absolute right-0 top-full w-64 pt-2 hidden">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v7Nav.map((item) => (
 										<a
@@ -110,16 +110,16 @@ const isActive = (href: string) => {
 						</div>
 
 						<!-- v6 Features Dropdown -->
-						<div class="group relative">
-							<button class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+						<div class="relative">
+							<button data-dropdown="v6" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
 								currentPath.startsWith('/v6') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
 							}`}>
 								v6
-								<svg class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="absolute right-0 top-full w-52 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
+							<div id="dropdown-v6" class="absolute right-0 top-full w-52 pt-2 hidden">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{v6Nav.map((item) => (
 										<a
@@ -139,14 +139,14 @@ const isActive = (href: string) => {
 						</div>
 
 						<!-- More Demos Dropdown -->
-						<div class="group relative">
-							<button class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white">
+						<div class="relative">
+							<button data-dropdown="more" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white">
 								More
-								<svg class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="absolute right-0 top-full w-64 pt-2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto">
+							<div id="dropdown-more" class="absolute right-0 top-full w-64 pt-2 hidden">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
 									{moreNav.map((item) => (
 										<a
@@ -256,12 +256,38 @@ const isActive = (href: string) => {
 		</nav>
 
 		<script>
-			const menuBtn = document.getElementById('mobile-menu-btn');
-			const mobileMenu = document.getElementById('mobile-menu');
+			function initNav() {
+				const menuBtn = document.getElementById('mobile-menu-btn');
+				const mobileMenu = document.getElementById('mobile-menu');
+				menuBtn?.addEventListener('click', () => {
+					mobileMenu?.classList.toggle('hidden');
+				});
 
-			menuBtn?.addEventListener('click', () => {
-				mobileMenu?.classList.toggle('hidden');
-			});
+				document.querySelectorAll<HTMLButtonElement>('[data-dropdown]').forEach((btn) => {
+					btn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						const id = btn.getAttribute('data-dropdown');
+						const panel = document.getElementById(`dropdown-${id}`);
+						const wasOpen = panel && !panel.classList.contains('hidden');
+
+						document.querySelectorAll('[id^="dropdown-"]').forEach((d) => d.classList.add('hidden'));
+						document.querySelectorAll('[data-dropdown] svg').forEach((s) => s.classList.remove('rotate-180'));
+
+						if (!wasOpen && panel) {
+							panel.classList.remove('hidden');
+							btn.querySelector('svg')?.classList.add('rotate-180');
+						}
+					});
+				});
+
+				document.addEventListener('click', () => {
+					document.querySelectorAll('[id^="dropdown-"]').forEach((d) => d.classList.add('hidden'));
+					document.querySelectorAll('[data-dropdown] svg').forEach((s) => s.classList.remove('rotate-180'));
+				});
+			}
+
+			initNav();
+			document.addEventListener('astro:after-swap', initNav);
 		</script>
 		<main class="mx-auto max-w-5xl px-4 py-8">
 			<slot />
