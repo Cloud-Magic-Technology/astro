@@ -1,66 +1,46 @@
-# TODO - astro
+# Astro Lab — TODO
 
-**Last Updated**: 2026-02-01
-**Status**: In Progress
-**GCP Project**: msp-quote
-**GitHub Repo**: https://github.com/cemarsh/astro
+**Last Updated**: 2026-07-16
+**Status**: v7.0.0 shipped
+**GitHub Repo**: https://github.com/Cloud-Magic-Technology/astro
 
-## Current Sprint
+## Completed (v7.0.0 Release)
 
-### In Progress
-- [ ] Initial project setup
+- [x] Upgrade to Astro 7.0.9 (React 19, Vue 3.5, Svelte 5, MDX 7, CF adapter 14)
+- [x] Wire up Fonts API (Inter + JetBrains Mono)
+- [x] Implement src/fetch.ts Advanced Routing pipeline
+- [x] Configure Route Caching with Cloudflare CDN provider
+- [x] Add Live Content Collections (GitHub releases)
+- [x] Create KV binding and API demo
+- [x] Capture real benchmarks (v5, v6-attributed, v7, v7-with-infra)
+- [x] Rebuild homepage as narrative entry point (zero client JS)
+- [x] Rebuild evolution page as v5→v6→v7 timeline
+- [x] Rebuild performance page with real measured data
+- [x] Create 4 v7 demo pages (advanced-routing, route-caching, rust-pipeline, agent-dev)
+- [x] Create 2 v6 demo pages (live-content, platform-parity)
+- [x] Restructure navigation (three-act + dropdowns)
+- [x] Rewrite README with full page table and migration summary
+- [x] Write MIGRATION_AUDIT.md
 
-### Ready to Start
-- [ ] Define project requirements
+## Post-Launch
 
-### Blocked
-- (none)
+### GitHub Release
+- [ ] Create GitHub Release for v7.0.0 tag with benchmark table
+- [ ] Add repo description: "Astro 7 showcase — v5→v6→v7 evolution with real benchmarks, live demos, cross-framework state"
+- [ ] Set topics: `astro`, `astro-7`, `islands-architecture`, `cloudflare-workers`, `showcase`, `react`, `vue`, `svelte`
 
-## Completed This Session
+### Deploy
+- [ ] Deploy to Cloudflare Workers via `cf-token auto astro-lab --preset project -- npx wrangler deploy`
+- [ ] Verify live site KV demo and live content pages work in production
+- [ ] Set up custom domain if desired
 
-- [x] Project initialized with Astro
-- [x] Svelte integration added
-- [x] GitHub repository created
-- [x] Initial commit pushed
+### Community
+- [ ] Post to r/astrojs with benchmark comparison
+- [ ] Share in Astro Discord #showcase channel
+- [ ] Blog post: "Migrating a Real Site from Astro 5 to 7"
 
-## Technical Debt / Future Work
-
-- [ ] Add deployment configuration
-- [ ] Set up CI/CD pipeline
-
-## MCP Server Status
-
-Last checked: 2026-02-01
-
-Note: This project has local settings only. Full MCP servers configured at workspace level.
-
-## Git Status
-
-**Branch**: main
-**Uncommitted Changes**: 0
-**Last Commit**: 75dfab6
-**Last Push**: 2026-02-01
-
-## Environment Verification
-
-- [ ] `.env` / `.env.local` present
-- [x] Dependencies installed (node_modules exists)
-- [ ] Tests passing
-- [ ] Build successful
-
-## Notes & Context
-
-### Important Decisions Made
-- Using Astro with Svelte integration
-- Cloudflare Workers deployment target (wrangler.jsonc present)
-
-### Questions / Clarifications Needed
-- GitHub repo name preference?
-- Public or private repository?
-
-### Resources & Links
-- Astro docs: https://docs.astro.build
-
----
-
-*This TODO file is automatically managed by Claude Code. Keep it updated at the end of each task.*
+### Future Enhancements
+- [ ] Add Lighthouse CI to GitHub Actions
+- [ ] Implement CSP when compatible with ClientRouter (blocked as of Astro 7.0.9)
+- [ ] Add more live collection sources (npm downloads, Discord stats)
+- [ ] Interactive benchmark runner page (build on-demand and compare)

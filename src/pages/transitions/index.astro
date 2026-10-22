@@ -44,19 +44,26 @@ import CodeBlock from '../../components/shared/CodeBlock.astro';
 		</a>
 	</section>
 
+	<section class="mb-6">
+		<InfoBox type="tip" title="Astro v6 — API renamed">
+			In Astro 6, <code class="rounded bg-slate-700 px-1 text-purple-300">ViewTransitions</code> was renamed to <code class="rounded bg-slate-700 px-1 text-purple-300">ClientRouter</code>.
+			The old export no longer exists — update your import and component name everywhere you use it.
+		</InfoBox>
+	</section>
+
 	<section class="mb-12">
 		<h2 class="mb-6 text-2xl font-bold text-white">How It Works</h2>
 
 		<div class="grid gap-6 md:grid-cols-2">
-			<CodeBlock title="Enable View Transitions" lang="astro">
+			<CodeBlock title="Enable Transitions — ClientRouter (Astro v6+)" lang="astro">
 {`---
 // In your layout or page
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 ---
 
 <html>
   <head>
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body>
     <slot />

@@ -1,25 +1,37 @@
 ---
 import '../styles/global.css';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
 	title?: string;
 	description?: string;
 }
 
-const { title = 'Astro Exploration', description = 'Exploring Astro capabilities' } = Astro.props;
+const { title = 'Astro Lab', description = 'Power & Evolution Showcase — One codebase, three major versions, every feature proven live.' } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 
 const mainNav = [
 	{ href: '/', label: 'Home' },
 	{ href: '/evolution', label: 'Evolution' },
-	{ href: '/playground', label: 'Playground' },
 	{ href: '/performance', label: 'Performance' },
 ];
 
-const demoNav = [
-	{ href: '/state-sharing', label: 'State Sharing', desc: 'Cross-framework communication' },
+const v7Nav = [
+	{ href: '/v7/advanced-routing', label: 'Advanced Routing', desc: 'src/fetch.ts pipeline composition' },
+	{ href: '/v7/route-caching', label: 'Route Caching', desc: 'CDN cache with Cloudflare provider' },
+	{ href: '/v7/rust-pipeline', label: 'Rust Pipeline', desc: 'Compiler & Sätteri benchmarks' },
+	{ href: '/v7/agent-dev', label: 'Agent Dev', desc: 'Astro × Claude Code' },
+];
+
+const v6Nav = [
+	{ href: '/v6/live-content', label: 'Live Content', desc: 'Request-time collections' },
+	{ href: '/v6/platform-parity', label: 'Platform Parity', desc: 'Cloudflare KV in dev & prod' },
+];
+
+const moreNav = [
+	{ href: '/playground', label: 'Playground', desc: 'Hydration strategies' },
+	{ href: '/state-sharing', label: 'State Sharing', desc: 'Cross-framework cart' },
 	{ href: '/transitions', label: 'Transitions', desc: 'View Transitions API' },
 	{ href: '/server-islands', label: 'Server Islands', desc: 'Dynamic + static mixing' },
 	{ href: '/api-demo', label: 'API Demo', desc: 'Server endpoints' },
@@ -30,6 +42,7 @@ const isActive = (href: string) => {
 	if (href === '/') return currentPath === '/';
 	return currentPath.startsWith(href);
 };
+
 ---
 
 <!doctype html>
@@ -42,9 +55,9 @@ const isActive = (href: string) => {
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<ViewTransitions />
+		<ClientRouter />
 	</head>
-	<body class="min-h-screen bg-slate-900 text-slate-100">
+	<body class="min-h-screen bg-slate-900 text-slate-100 font-sans">
 		<nav class="sticky top-0 z-50 border-b border-slate-700 bg-slate-800/95 backdrop-blur-sm">
 			<div class="mx-auto max-w-5xl px-4 py-3">
 				<div class="flex items-center justify-between">
@@ -67,17 +80,75 @@ const isActive = (href: string) => {
 							</a>
 						))}
 
-						<!-- Demos Dropdown -->
-						<div class="group relative">
-							<button class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white">
-								Demos
-								<svg class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<!-- v7 Features Dropdown -->
+						<div class="group relative" data-dropdown-wrap="v7">
+							<button data-dropdown="v7" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+								currentPath.startsWith('/v7') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+							}`}>
+								v7
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 								</svg>
 							</button>
-							<div class="invisible absolute right-0 top-full w-64 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+							<div id="dropdown-v7" class="absolute right-0 top-full w-64 pt-2 hidden">
 								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
-									{demoNav.map((item) => (
+									{v7Nav.map((item) => (
+										<a
+											href={item.href}
+											class={`block rounded-lg px-3 py-2 transition-colors ${
+												isActive(item.href)
+													? 'bg-purple-500/20 text-purple-400'
+													: 'hover:bg-slate-700'
+											}`}
+										>
+											<span class="font-medium text-white">{item.label}</span>
+											<span class="block text-xs text-slate-400">{item.desc}</span>
+										</a>
+									))}
+								</div>
+							</div>
+						</div>
+
+						<!-- v6 Features Dropdown -->
+						<div class="group relative" data-dropdown-wrap="v6">
+							<button data-dropdown="v6" class={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+								currentPath.startsWith('/v6') ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+							}`}>
+								v6
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+								</svg>
+							</button>
+							<div id="dropdown-v6" class="absolute right-0 top-full w-52 pt-2 hidden">
+								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
+									{v6Nav.map((item) => (
+										<a
+											href={item.href}
+											class={`block rounded-lg px-3 py-2 transition-colors ${
+												isActive(item.href)
+													? 'bg-purple-500/20 text-purple-400'
+													: 'hover:bg-slate-700'
+											}`}
+										>
+											<span class="font-medium text-white">{item.label}</span>
+											<span class="block text-xs text-slate-400">{item.desc}</span>
+										</a>
+									))}
+								</div>
+							</div>
+						</div>
+
+						<!-- More Demos Dropdown -->
+						<div class="group relative" data-dropdown-wrap="more">
+							<button data-dropdown="more" class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white">
+								More
+								<svg class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+								</svg>
+							</button>
+							<div id="dropdown-more" class="absolute right-0 top-full w-64 pt-2 hidden">
+								<div class="rounded-xl border border-slate-700 bg-slate-800 p-2 shadow-xl">
+									{moreNav.map((item) => (
 										<a
 											href={item.href}
 											class={`block rounded-lg px-3 py-2 transition-colors ${
@@ -130,15 +201,39 @@ const isActive = (href: string) => {
 							</a>
 						))}
 						<div class="border-t border-slate-700 my-2 pt-2">
-							<span class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Demos</span>
+							<span class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">v7 Features</span>
 						</div>
-						{demoNav.map((item) => (
+						{v7Nav.map((item) => (
 							<a
 								href={item.href}
 								class={`block rounded-lg px-3 py-2 text-sm ${
-									isActive(item.href)
-										? 'bg-purple-500/20 text-purple-400'
-										: 'text-slate-300 hover:bg-slate-700'
+									isActive(item.href) ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700'
+								}`}
+							>
+								{item.label}
+							</a>
+						))}
+						<div class="border-t border-slate-700 my-2 pt-2">
+							<span class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">v6 Features</span>
+						</div>
+						{v6Nav.map((item) => (
+							<a
+								href={item.href}
+								class={`block rounded-lg px-3 py-2 text-sm ${
+									isActive(item.href) ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700'
+								}`}
+							>
+								{item.label}
+							</a>
+						))}
+						<div class="border-t border-slate-700 my-2 pt-2">
+							<span class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">More Demos</span>
+						</div>
+						{moreNav.map((item) => (
+							<a
+								href={item.href}
+								class={`block rounded-lg px-3 py-2 text-sm ${
+									isActive(item.href) ? 'bg-purple-500/20 text-purple-400' : 'text-slate-300 hover:bg-slate-700'
 								}`}
 							>
 								{item.label}
@@ -161,12 +256,65 @@ const isActive = (href: string) => {
 		</nav>
 
 		<script>
-			const menuBtn = document.getElementById('mobile-menu-btn');
-			const mobileMenu = document.getElementById('mobile-menu');
+			function initNav() {
+				const menuBtn = document.getElementById('mobile-menu-btn');
+				const mobileMenu = document.getElementById('mobile-menu');
+				menuBtn?.addEventListener('click', () => {
+					mobileMenu?.classList.toggle('hidden');
+				});
 
-			menuBtn?.addEventListener('click', () => {
-				mobileMenu?.classList.toggle('hidden');
-			});
+				function closeAll() {
+					document.querySelectorAll('[id^="dropdown-"]').forEach((d) => d.classList.add('hidden'));
+					document.querySelectorAll('[data-dropdown] svg').forEach((s) => s.classList.remove('rotate-180'));
+				}
+
+				function openDropdown(id: string) {
+					closeAll();
+					const panel = document.getElementById(`dropdown-${id}`);
+					const btn = document.querySelector(`[data-dropdown="${id}"]`);
+					if (panel) panel.classList.remove('hidden');
+					if (btn) btn.querySelector('svg')?.classList.add('rotate-180');
+				}
+
+				const hoverTimers: Record<string, number> = {};
+
+				document.querySelectorAll<HTMLElement>('[data-dropdown-wrap]').forEach((wrap) => {
+					const id = wrap.getAttribute('data-dropdown-wrap')!;
+
+					wrap.addEventListener('mouseenter', () => {
+						clearTimeout(hoverTimers[id]);
+						openDropdown(id);
+					});
+
+					wrap.addEventListener('mouseleave', () => {
+						hoverTimers[id] = window.setTimeout(() => {
+							const panel = document.getElementById(`dropdown-${id}`);
+							if (panel) panel.classList.add('hidden');
+							const btn = wrap.querySelector('[data-dropdown] svg');
+							if (btn) btn.classList.remove('rotate-180');
+						}, 150);
+					});
+				});
+
+				document.querySelectorAll<HTMLButtonElement>('[data-dropdown]').forEach((btn) => {
+					btn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						const id = btn.getAttribute('data-dropdown')!;
+						const panel = document.getElementById(`dropdown-${id}`);
+						const wasOpen = panel && !panel.classList.contains('hidden');
+						closeAll();
+						if (!wasOpen && panel) {
+							panel.classList.remove('hidden');
+							btn.querySelector('svg')?.classList.add('rotate-180');
+						}
+					});
+				});
+
+				document.addEventListener('click', closeAll);
+			}
+
+			initNav();
+			document.addEventListener('astro:after-swap', initNav);
 		</script>
 		<main class="mx-auto max-w-5xl px-4 py-8">
 			<slot />
@@ -175,14 +323,17 @@ const isActive = (href: string) => {
 			<div class="mx-auto max-w-5xl px-4 py-6">
 				<div class="flex flex-col items-center justify-between gap-4 md:flex-row">
 					<p class="text-sm text-slate-400">
-						Built with Astro + React + Vue + Svelte + Tailwind
+						Built with Astro 7 + React + Vue + Svelte + Tailwind
 					</p>
 					<div class="flex gap-4 text-sm text-slate-500">
 						<a href="/evolution" class="hover:text-purple-400">Evolution</a>
-						<a href="/playground" class="hover:text-purple-400">Playground</a>
+						<a href="/v7/rust-pipeline" class="hover:text-purple-400">Benchmarks</a>
 						<a href="/performance" class="hover:text-purple-400">Performance</a>
 					</div>
 				</div>
+				<p class="mt-3 text-center text-xs text-slate-600">
+					A <a href="https://cloudmagic.software" class="hover:text-purple-400">Cloud Magic Software Group</a> showcase
+				</p>
 			</div>
 		</footer>
 	</body>

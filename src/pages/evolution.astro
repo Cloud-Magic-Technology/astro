@@ -1,145 +1,153 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TimelineCard from '../components/evolution/TimelineCard.astro';
-import EraComparison from '../components/evolution/EraComparison.astro';
+import VersionCard from '../components/evolution/VersionCard.astro';
 import ScrollReveal from '../components/evolution/ScrollReveal.astro';
-import InfoBox from '../components/shared/InfoBox.astro';
+import AnimatedNumber from '../components/shared/AnimatedNumber.svelte';
 
-const eras = [
-	{
-		era: 'Era 1',
-		title: 'Static HTML',
-		years: '1991-1999',
-		color: 'blue' as const,
-		tech: ['HTML', 'CSS', 'Tables', 'Frames'],
-		pros: ['Blazing fast', 'Simple to deploy', 'Works everywhere', 'No server needed'],
-		cons: ['No interactivity', 'Hard to maintain', 'Limited functionality', 'Repetitive code'],
-	},
-	{
-		era: 'Era 2',
-		title: 'Server-Side Rendering',
-		years: '2000-2009',
-		color: 'green' as const,
-		tech: ['PHP', 'ASP.NET', 'Ruby on Rails', 'JSP'],
-		pros: ['Dynamic content', 'Database integration', 'User authentication', 'Good SEO'],
-		cons: ['Full page reloads', 'Server load', 'Slower interactions', 'Complex deployment'],
-	},
-	{
-		era: 'Era 3',
-		title: 'SPA Revolution',
-		years: '2010-2019',
-		color: 'orange' as const,
-		tech: ['React', 'Angular', 'Vue', 'Webpack'],
-		pros: ['App-like experience', 'Fast navigation', 'Rich interactions', 'Great DX'],
-		cons: ['Large JS bundles', 'Poor initial load', 'SEO challenges', 'Accessibility issues'],
-	},
-	{
-		era: 'Era 4',
-		title: 'The Astro Way',
-		years: '2020-Present',
-		color: 'purple' as const,
-		tech: ['Astro', 'Islands', 'Partial Hydration', 'Multi-Framework'],
-		pros: ['Zero JS by default', 'Use any framework', 'Great performance', 'Perfect SEO'],
-		cons: ['Learning curve', 'Newer ecosystem', 'Some edge cases', 'Paradigm shift'],
-	},
-];
+import v5 from '../../benchmarks/v5-baseline.json';
+import v7 from '../../benchmarks/v7-baseline.json';
+
+const buildImprovement = ((1 - v7.builds.median_ms / v5.builds.median_ms) * 100).toFixed(0);
 ---
 
-<Layout title="Evolution of Web Development | Astro Lab" description="A journey through the eras of web development and how Astro solves each generation's problems">
-	<div class="mb-12">
-		<ScrollReveal>
-			<h1 class="mb-4 bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
-				The Evolution of Web Development
-			</h1>
-			<p class="text-lg text-slate-300">
-				A journey through three decades of innovation, and how Astro represents
-				the culmination of lessons learned.
+<Layout title="Evolution | Astro Lab" description="The story of Astro from v5 to v7">
+	<div class="space-y-12">
+		<header class="text-center">
+			<h1 class="text-4xl font-bold text-white mb-3">The Evolution of Astro</h1>
+			<p class="text-lg text-slate-400 max-w-2xl mx-auto">
+				Three major versions. Each one building on the last.
+				Every feature on this site was built at the version that introduced it.
 			</p>
-		</ScrollReveal>
-	</div>
+		</header>
 
-	<section class="mb-16">
-		<ScrollReveal delay={100}>
-			<InfoBox type="tip" title="The Web's Journey">
-				Every era solved real problems but introduced new ones. Astro's genius is recognizing
-				that the best solution isn't choosing one approach—it's combining them intelligently.
-			</InfoBox>
-		</ScrollReveal>
-	</section>
+		<!-- Timeline -->
+		<div class="relative">
+			<!-- Vertical line -->
+			<div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-green-500 to-purple-500 hidden md:block"></div>
 
-	<section class="relative mb-16">
-		<div class="absolute left-4 top-0 hidden h-full w-0.5 bg-gradient-to-b from-blue-500 via-green-500 via-orange-500 to-purple-500 md:block"></div>
+			<!-- v5 -->
+			<ScrollReveal delay={0}>
+				<div class="relative md:ml-20 mb-12">
+					<div class="absolute -left-[3.25rem] top-6 hidden h-5 w-5 rounded-full border-4 border-slate-900 bg-blue-500 md:block"></div>
+					<VersionCard
+						version="v5"
+						tagline="The Foundation — Islands, Content, Transitions"
+						color="blue"
+						features={[
+							{ name: 'Islands Architecture', href: '/playground' },
+							{ name: 'Content Collections', href: '/content-power' },
+							{ name: 'View Transitions', href: '/transitions' },
+							{ name: 'Server Islands', href: '/server-islands' },
+							{ name: 'Server Endpoints', href: '/api-demo' },
+							{ name: 'Cross-Framework State', href: '/state-sharing' },
+						]}
+						highlights={[
+							'Zero JS by default — ship only what hydrates',
+							'Multi-framework support: React, Vue, Svelte, Solid in one project',
+							'Type-safe content collections with Zod validation',
+							'Built-in View Transitions API for SPA-like navigation',
+							'Server Islands for mixing static and dynamic content',
+						]}
+					/>
+				</div>
+			</ScrollReveal>
 
-		<div class="space-y-8 md:pl-12">
-			{eras.map((era, index) => (
-				<ScrollReveal delay={index * 150}>
-					<TimelineCard {...era} />
-				</ScrollReveal>
-			))}
+			<!-- v6 -->
+			<ScrollReveal delay={200}>
+				<div class="relative md:ml-20 mb-12">
+					<div class="absolute -left-[3.25rem] top-6 hidden h-5 w-5 rounded-full border-4 border-slate-900 bg-green-500 md:block"></div>
+					<VersionCard
+						version="v6"
+						tagline="Platform Parity — Dev/Prod Unity, New APIs"
+						color="green"
+						features={[
+							{ name: 'Live Content Collections', href: '/v6/live-content' },
+							{ name: 'Platform Parity', href: '/v6/platform-parity' },
+							{ name: 'Fonts API' },
+							{ name: 'CSP Support' },
+							{ name: 'Vite Environment API' },
+						]}
+						highlights={[
+							'Unified dev server via Vite Environment API — workerd runs in dev',
+							'First-class Cloudflare integration: KV, R2, D1 work identically in dev and prod',
+							'Built-in Fonts API: automatic download, subsetting, and font-face generation',
+							'Content Security Policy with automatic script/style hashing',
+							'Live Content Collections for request-time data fetching',
+							'Astro joins Cloudflare — deeper platform integration',
+						]}
+					/>
+				</div>
+			</ScrollReveal>
+
+			<!-- v7 -->
+			<ScrollReveal delay={400}>
+				<div class="relative md:ml-20 mb-12">
+					<div class="absolute -left-[3.25rem] top-6 hidden h-5 w-5 rounded-full border-4 border-slate-900 bg-purple-500 md:block"></div>
+					<VersionCard
+						version="v7"
+						tagline="The Rust Era — Speed, Composition, AI-Native"
+						color="purple"
+						features={[
+							{ name: 'Advanced Routing', href: '/v7/advanced-routing' },
+							{ name: 'Route Caching', href: '/v7/route-caching' },
+							{ name: 'Rust Pipeline', href: '/v7/rust-pipeline' },
+							{ name: 'Agent Dev Server', href: '/v7/agent-dev' },
+							{ name: 'Vite 8 + Rolldown' },
+							{ name: 'Queued Rendering' },
+						]}
+						highlights={[
+							'Rust compiler (oxc + Lightning CSS) — stricter and faster',
+							'Sätteri: Rust-native markdown/MDX pipeline replaces remark/rehype',
+							'src/fetch.ts: composable request pipeline following Web Fetch standard',
+							'Route caching with pluggable CDN providers (Cloudflare, memory)',
+							'Agent dev server: background mode, JSON logs, health endpoints',
+							'Vite 8 + Rolldown bundler — esbuild replaced with Rust',
+							'Queued rendering: ~2.4x faster page generation',
+						]}
+					/>
+				</div>
+			</ScrollReveal>
 		</div>
-	</section>
 
-	<section class="mb-16">
-		<ScrollReveal delay={100}>
-			<h2 class="mb-6 text-2xl font-bold text-white">The Numbers Don't Lie</h2>
-			<EraComparison />
-		</ScrollReveal>
-	</section>
-
-	<section class="mb-16">
-		<ScrollReveal delay={100}>
-			<div class="rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 p-8">
-				<h2 class="mb-4 text-2xl font-bold text-white">Why Astro Wins</h2>
-				<div class="grid gap-6 md:grid-cols-2">
-					<div>
-						<h3 class="mb-2 font-semibold text-purple-400">Ship Less JavaScript</h3>
-						<p class="text-sm text-slate-300">
-							Astro renders your components to HTML at build time, sending zero JavaScript
-							by default. Interactive components only ship the JS they need.
-						</p>
-					</div>
-					<div>
-						<h3 class="mb-2 font-semibold text-cyan-400">Use Any Framework</h3>
-						<p class="text-sm text-slate-300">
-							React, Vue, Svelte, Solid, Preact—use what you know. Mix and match
-							frameworks in the same project without conflict.
-						</p>
-					</div>
-					<div>
-						<h3 class="mb-2 font-semibold text-green-400">Islands Architecture</h3>
-						<p class="text-sm text-slate-300">
-							Only hydrate the interactive parts. A static page with one interactive
-							widget ships only that widget's JavaScript.
-						</p>
-					</div>
-					<div>
-						<h3 class="mb-2 font-semibold text-amber-400">Content-First</h3>
-						<p class="text-sm text-slate-300">
-							Built for content sites, blogs, docs, and marketing pages. MDX support,
-							content collections, and excellent SEO out of the box.
-						</p>
-					</div>
+		<!-- Metrics comparison -->
+		<section class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+			<h2 class="text-xl font-bold text-white mb-6 text-center">The Numbers</h2>
+			<div class="grid gap-6 md:grid-cols-3">
+				<div class="text-center">
+					<p class="text-sm text-slate-400 mb-2">Build Time Reduction</p>
+					<p class="text-4xl font-bold text-green-400">
+						<AnimatedNumber client:visible value={parseFloat(buildImprovement)} suffix="%" />
+					</p>
+					<p class="text-xs text-slate-500 mt-1">v5 → v7 on this repo</p>
+				</div>
+				<div class="text-center">
+					<p class="text-sm text-slate-400 mb-2">v5 Build (median)</p>
+					<p class="text-4xl font-bold text-slate-400">
+						<AnimatedNumber client:visible value={v5.builds.median_ms / 1000} decimals={1} suffix="s" />
+					</p>
+					<p class="text-xs text-slate-500 mt-1">Astro {v5.version}</p>
+				</div>
+				<div class="text-center">
+					<p class="text-sm text-slate-400 mb-2">v7 Build (median)</p>
+					<p class="text-4xl font-bold text-purple-400">
+						<AnimatedNumber client:visible value={v7.builds.median_ms / 1000} decimals={1} suffix="s" />
+					</p>
+					<p class="text-xs text-slate-500 mt-1">Astro {v7.version}</p>
 				</div>
 			</div>
-		</ScrollReveal>
-	</section>
+		</section>
 
-	<section>
-		<ScrollReveal delay={100}>
-			<div class="text-center">
-				<h2 class="mb-4 text-2xl font-bold text-white">Ready to See It in Action?</h2>
-				<p class="mb-6 text-slate-300">
-					Explore our interactive demos to see how Astro's features work in practice.
-				</p>
-				<div class="flex flex-wrap justify-center gap-4">
-					<a href="/playground" class="rounded-lg bg-purple-600 px-6 py-3 font-medium text-white hover:bg-purple-700">
-						Try the Playground
-					</a>
-					<a href="/performance" class="rounded-lg border border-purple-500 px-6 py-3 font-medium text-purple-400 hover:bg-purple-500/20">
-						View Performance Stats
-					</a>
-				</div>
+		<!-- CTA -->
+		<div class="text-center space-y-4">
+			<p class="text-slate-400">Explore every feature in depth:</p>
+			<div class="flex flex-wrap justify-center gap-3">
+				<a href="/v7/rust-pipeline" class="rounded-lg bg-purple-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-purple-500">
+					See the Benchmarks
+				</a>
+				<a href="/performance" class="rounded-lg border border-slate-600 px-5 py-2.5 font-medium text-slate-300 transition-colors hover:bg-slate-700">
+					Full Performance Report
+				</a>
 			</div>
-		</ScrollReveal>
-	</section>
+		</div>
+	</div>
 </Layout>

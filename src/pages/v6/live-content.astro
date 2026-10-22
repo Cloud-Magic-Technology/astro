@@ -1,0 +1,208 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/shared/CodeBlock.astro';
+
+let releases: Array<{ id: string; data: { tag_name: string; name: string; published_at: string; body: string; html_url: string } }> = [];
+let error: Error | null = null;
+const fetchStart = performance.now();
+
+try {
+	const res = await fetch(
+		'https://api.github.com/repos/withastro/astro/releases?per_page=8',
+		{ headers: { 'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'AstroLab' } }
+	);
+	if (!res.ok) {
+		throw new Error(`GitHub API returned ${res.status}: ${res.statusText}`);
+	}
+	const data = await res.json() as any[];
+	releases = data.map((r: any) => ({
+		id: r.tag_name,
+		data: {
+			tag_name: r.tag_name,
+			name: r.name || r.tag_name,
+			published_at: r.published_at,
+			body: (r.body || '').slice(0, 200),
+			html_url: r.html_url,
+		},
+	}));
+} catch (e) {
+	error = e instanceof Error ? e : new Error(String(e));
+}
+
+const fetchDuration = (performance.now() - fetchStart).toFixed(0);
+const now = new Date().toISOString();
+
+const loaderExample = `// src/live.config.ts
+import { defineLiveCollection } from 'astro:content';
+import { z } from 'astro/zod';
+
+const githubReleasesLoader = {
+  name: 'github-releases',
+
+  async loadEntry({ filter }) {
+    const res = await fetch(
+      \`https://api.github.com/repos/withastro/astro/releases/tags/\${filter.id}\`
+    );
+    if (!res.ok) return { error: new Error(\`HTTP \${res.status}\`) };
+    const release = await res.json();
+    return { id: release.tag_name, data: { ... } };
+  },
+
+  async loadCollection() {
+    const res = await fetch(
+      'https://api.github.com/repos/withastro/astro/releases?per_page=10'
+    );
+    if (!res.ok) return { error: new Error(\`HTTP \${res.status}\`) };
+    const releases = await res.json();
+    return { entries: releases.map(r => ({ id: r.tag_name, data: { ... } })) };
+  },
+};
+
+const githubReleases = defineLiveCollection({
+  type: 'live',
+  loader: githubReleasesLoader,
+  schema: z.object({
+    tag_name: z.string(),
+    name: z.string(),
+    published_at: z.string(),
+    body: z.string(),
+    html_url: z.string(),
+  }),
+});
+
+export const collections = { githubReleases };`;
+---
+
+<Layout title="Live Content Collections | Astro Lab" description="Request-time content collections with error resilience">
+	<div class="space-y-8">
+		<header class="text-center">
+			<span class="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-sm font-medium text-blue-400 mb-4">Astro 6</span>
+			<h1 class="text-4xl font-bold text-white mb-3">Live Content Collections</h1>
+			<p class="text-lg text-slate-400 max-w-2xl mx-auto">
+				Content collections that fetch data at request time, not build time.
+				This page fetches Astro's latest releases from GitHub on every request.
+			</p>
+		</header>
+
+		<section class="rounded-xl border border-green-500/30 bg-green-500/10 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+				<h2 class="text-xl font-bold text-green-300">Live Data</h2>
+				<div class="flex items-center gap-4 text-sm">
+					<span class="text-slate-400">Fetched in <span class="font-mono text-green-400">{fetchDuration}ms</span></span>
+					<span class="text-slate-400">at <span class="font-mono text-slate-300">{now.slice(11, 19)} UTC</span></span>
+				</div>
+			</div>
+
+			{error ? (
+				<div class="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+					<h3 class="font-semibold text-red-400 mb-1">Fetch Error</h3>
+					<p class="text-sm text-red-300">{error.message}</p>
+					<p class="text-xs text-slate-400 mt-2">
+						This is the error resilience pattern in action — the page still renders
+						with a meaningful error state instead of crashing.
+					</p>
+				</div>
+			) : (
+				<Fragment>
+					{releases.map((release) => (
+						<a
+							href={release.data.html_url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="block rounded-lg border border-slate-700 bg-slate-800 p-4 transition-colors hover:border-purple-500/50 mb-3"
+						>
+							<div class="flex items-start justify-between gap-3">
+								<div>
+									<h3 class="font-semibold text-white">{release.data.name}</h3>
+									<p class="text-sm text-slate-400 mt-1 line-clamp-2">{release.data.body.replace(/[#*`]/g, '').trim() || 'No description'}</p>
+								</div>
+								<div class="text-right shrink-0">
+									<span class="inline-block rounded-full bg-purple-500/20 px-2 py-0.5 text-xs font-mono text-purple-400">
+										{release.data.tag_name}
+									</span>
+									<p class="text-xs text-slate-500 mt-1">
+										{new Date(release.data.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+									</p>
+								</div>
+							</div>
+						</a>
+					))}
+				</Fragment>
+			)}
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">How It Works</h2>
+			<div class="grid gap-4 md:grid-cols-3">
+				<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+					<h3 class="font-semibold text-purple-400 mb-2">1. Define Loader</h3>
+					<p class="text-sm text-slate-400">
+						Create a <code class="font-mono">LiveLoader</code> with
+						<code class="font-mono">loadEntry</code> and <code class="font-mono">loadCollection</code>
+						methods that fetch from any API.
+					</p>
+				</div>
+				<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+					<h3 class="font-semibold text-purple-400 mb-2">2. Separate Config</h3>
+					<p class="text-sm text-slate-400">
+						Live collections go in <code class="font-mono">src/live.config.ts</code>,
+						separate from build-time collections in <code class="font-mono">content.config.ts</code>.
+					</p>
+				</div>
+				<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
+					<h3 class="font-semibold text-purple-400 mb-2">3. Error Resilience</h3>
+					<p class="text-sm text-slate-400">
+						Loaders return <code class="font-mono">{"{ entry }"}</code> on success or
+						<code class="font-mono">{"{ error }"}</code> on failure — pages always render.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="space-y-4">
+			<h2 class="text-xl font-bold text-white">Loader Implementation</h2>
+			<CodeBlock title="src/live.config.ts" lang="typescript">
+				{loaderExample}
+			</CodeBlock>
+		</section>
+
+		<section class="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+			<h2 class="text-xl font-bold text-amber-300 mb-3">Build-time vs Live</h2>
+			<div class="overflow-x-auto">
+				<table class="w-full text-sm">
+					<thead>
+						<tr class="border-b border-slate-700">
+							<th class="py-2 text-left text-slate-400"></th>
+							<th class="py-2 text-left text-slate-400">Build-time (content.config.ts)</th>
+							<th class="py-2 text-left text-purple-400">Live (live.config.ts)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-2 text-white">When fetched</td>
+							<td class="py-2 text-slate-300">At build</td>
+							<td class="py-2 text-purple-300">Every request</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-2 text-white">Data freshness</td>
+							<td class="py-2 text-slate-300">Stale until rebuild</td>
+							<td class="py-2 text-purple-300">Always current</td>
+						</tr>
+						<tr class="border-b border-slate-700/50">
+							<td class="py-2 text-white">Error handling</td>
+							<td class="py-2 text-slate-300">Build fails</td>
+							<td class="py-2 text-purple-300">Graceful fallback</td>
+						</tr>
+						<tr>
+							<td class="py-2 text-white">Best for</td>
+							<td class="py-2 text-slate-300">Blog posts, docs</td>
+							<td class="py-2 text-purple-300">APIs, feeds, dashboards</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</div>
+</Layout>

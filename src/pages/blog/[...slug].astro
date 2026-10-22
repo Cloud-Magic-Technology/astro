@@ -48,6 +48,7 @@ const { Content } = await render(post);
 </Layout>
 
 <style>
+	article :global(div > h1:first-child) { display: none; }
 	article :global(h1) { font-size: 1.5rem; font-weight: 700; color: white; margin-top: 2rem; margin-bottom: 1rem; }
 	article :global(h2) { font-size: 1.25rem; font-weight: 700; color: white; margin-top: 1.5rem; margin-bottom: 0.75rem; }
 	article :global(h3) { font-size: 1.125rem; font-weight: 700; color: white; margin-top: 1rem; margin-bottom: 0.5rem; }
